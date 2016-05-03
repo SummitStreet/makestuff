@@ -44,13 +44,15 @@ $(MODULE_PARAMETERS) :
 %.py :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
 	@mkdir -p $(BUILD_DIR)
-	@if cat $+ | grep -q $(PYTHON_IMPORT_MACRO) ; then \
-		mkdir -p $(TEMP_DIR) ; \
-		cat $+ | grep "^from.*import\|^import" > $(TEMP_DIR)/$@.imports ; \
-		cat $+ | sed "/import/d" | sed -e "/$(PYTHON_IMPORT_MACRO)/ {" -e "r $(TEMP_DIR)/$@.imports" -e "d" -e "}" > $(BUILD_DIR)/$@ ; \
-		rm -fr $(TEMP_DIR) ; \
-	else \
-		cat $+ > $(BUILD_DIR)/$@ ; \
+	@if [ -n "$+" ]; then \
+		if cat $+ | grep -q $(PYTHON_IMPORT_MACRO) ; then \
+			mkdir -p $(TEMP_DIR) ; \
+			cat $+ | grep "^from.*import\|^import" > $(TEMP_DIR)/$@.imports ; \
+			cat $+ | sed "/import/d" | sed -e "/$(PYTHON_IMPORT_MACRO)/ {" -e "r $(TEMP_DIR)/$@.imports" -e "d" -e "}" > $(BUILD_DIR)/$@ ; \
+			rm -fr $(TEMP_DIR) ; \
+		else \
+			cat $+ > $(BUILD_DIR)/$@ ; \
+		fi ; \
 	fi
 	@$(PYLINT) $(PYLINT_ARGS) $(BUILD_DIR)/$@ 2>/dev/null
 
