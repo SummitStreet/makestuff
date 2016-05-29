@@ -49,6 +49,6 @@ $(MODULE_PARAMETERS) :
 	@sed $(SED_ARGS) $(SED_SLC_REGEX) $(BUILD_DIR)/$@
 	@sed $(SED_ARGS) $(SED_MLC_REGEX) $(BUILD_DIR)/$@
 
-$(RUN_TESTS): $(TEST_TARGETS)
+$(RUN_TESTS) : $(TEST_TARGETS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
 	@$(foreach test,$(TEST_TARGETS),$(NODE) $(BUILD_DIR)/$(test))

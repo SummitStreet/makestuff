@@ -32,7 +32,6 @@ include $(MAKESTUFF)/global_rules.mak
 
 $(MODULE_CLEAN) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
-	@rm -rf $(NPM_DIR)
 
 $(MODULE_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON="$(PYTHON)"
@@ -56,5 +55,6 @@ $(MODULE_PARAMETERS) :
 	fi
 	@$(PYLINT) $(PYLINT_ARGS) $(BUILD_DIR)/$@ 2>/dev/null
 
-$(RUN_TESTS): $(TEST_TARGETS)
+$(RUN_TESTS) : $(TEST_TARGETS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
+	@$(foreach test,$^,$(PYLINT) $(PYLINT_ARGS) $(test) ; $(PYTHON) $(PYTHON_ARGS) $(test))
