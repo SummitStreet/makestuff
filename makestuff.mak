@@ -40,6 +40,7 @@ NOW=`date "$(DATE_TIME)"`
 SED_ARGS=$(if grep -c 'Darwin',-i "",-i)
 BUILD_DIR=dist
 SOURCE_DIR=src
+TEMP_DIR=temp
 
 .SUFFIXES :
 .PHONY : $(ALL) $(CLEAN) $(GLOBAL_PARAMETERS) $(ENVIRONMENT_INFO) $(BUILD_PREAMBLE) $(BUILD) $(BUILD_EPILOGUE)
@@ -62,9 +63,14 @@ global_rules.mak : \
 global_vars.mak : \
 	$(SOURCE_DIR)/global/global_vars.mak
 
+$(TEMP_DIR)/init_rule.mak+py :
+	@mkdir -p $(TEMP_DIR)
+	@INLINE='$(shell cat $(SOURCE_DIR)/main/python/init_rule.py | python $(SOURCE_DIR)/main/python/inline.py)' ; \
+		cat $(SOURCE_DIR)/global/init_rule.mak | sed 's/init_rule.py/'"$$INLINE"'/' > $@
+
 javascript.mak : \
 	$(SOURCE_DIR)/global/license.mak \
-	$(SOURCE_DIR)/global/init_rule.mak \
+	$(TEMP_DIR)/init_rule.mak+py \
 	$(SOURCE_DIR)/javascript/javascript.mak
 
 javascript_rules.mak : \
@@ -75,7 +81,7 @@ javascript_vars.mak : \
 
 python.mak : \
 	$(SOURCE_DIR)/global/license.mak \
-	$(SOURCE_DIR)/global/init_rule.mak \
+	$(TEMP_DIR)/init_rule.mak+py \
 	$(SOURCE_DIR)/python/python.mak
 
 python_rules.mak : \
@@ -91,7 +97,7 @@ python_vars.mak : \
 
 $(CLEAN) : $(ENVIRONMENT_INFO)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR) $(TEMP_DIR)
 
 $(GLOBAL_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] SELF="$(SELF)"
@@ -109,6 +115,7 @@ $(BUILD_EPILOGUE) :
 
 $(BUILD) : $(BUILD_PREAMBLE) $(BUILD_TARGETS) $(BUILD_EPILOGUE)
 	@echo $(NOW) [SYS] [$(SELF)] [$@]
+	@rm -rf $(TEMP_DIR)
 
 $(ALL) : $(ENVIRONMENT_INFO) $(BUILD)
 	@echo $(NOW) [SYS] [$(SELF)] [$@]

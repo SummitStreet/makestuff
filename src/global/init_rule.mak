@@ -2,9 +2,9 @@
 # makestuff/src/global/init_rule.mak
 
 EXT_DIR=.dependencies
-MAKESTUFF_NAMESPACE=github.com/SummitStreet/makestuff
-MAKESTUFF_VERSION=master
-MAKESTUFF=$(EXT_DIR)/$(MAKESTUFF_NAMESPACE)/$(MAKESTUFF_VERSION)/dist
+GIT_CLONE="git clone --branch {ver} https://{repo}.git {dir} >/dev/null 2>/dev/null"
+MAKESTUFF_REPO=github.com/SummitStreet/makestuff@master.git
+MAKESTUFF=$(EXT_DIR)/github.com/SummitStreet/makestuff/master/dist
 
 all :
 
@@ -12,9 +12,6 @@ all :
 ### usage: make [-f <makefile>] init [EXT_DIR=<external_dependency_root_directory>]
 
 init :
-		@package_dir="$(EXT_DIR)/$(MAKESTUFF_NAMESPACE)/$(MAKESTUFF_VERSION)" ; if [ ! -d "$$package_dir" ]; then \
-			mkdir -p $$package_dir ; \
-			git clone --branch $(MAKESTUFF_VERSION) https://$(MAKESTUFF_NAMESPACE).git $$package_dir >/dev/null 2>/dev/null ; \
-		fi
+	@python -c 'init_rule.py' $(EXT_DIR) $(MAKESTUFF_REPO) $(GIT_CLONE)
 
 .PHONY : init
