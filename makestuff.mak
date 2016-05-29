@@ -55,18 +55,14 @@ BUILD_TARGETS=\
 	javascript_vars.mak \
 	python.mak \
 	python_rules.mak \
-	python_vars.mak
+	python_vars.mak \
+	makestuff.py
 
 global_rules.mak : \
 	$(SOURCE_DIR)/global/global_rules.mak
 
 global_vars.mak : \
 	$(SOURCE_DIR)/global/global_vars.mak
-
-$(TEMP_DIR)/init_rule.mak+py :
-	@mkdir -p $(TEMP_DIR)
-	@INLINE='$(shell cat $(SOURCE_DIR)/main/python/init_rule.py | python $(SOURCE_DIR)/main/python/inline.py)' ; \
-		cat $(SOURCE_DIR)/global/init_rule.mak | sed 's/init_rule.py/'"$$INLINE"'/' > $@
 
 javascript.mak : \
 	$(SOURCE_DIR)/global/license.mak \
@@ -90,10 +86,23 @@ python_rules.mak : \
 python_vars.mak : \
 	$(SOURCE_DIR)/python/python_vars.mak
 
-%.mak :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
+makestuff.py : \
+	$(SOURCE_DIR)/main/python/makestuff.py
+
+$(TEMP_DIR)/init_rule.mak+py :
+	@mkdir -p $(TEMP_DIR)
+	@INLINE='$(shell cat $(SOURCE_DIR)/main/python/init_rule.py | python $(SOURCE_DIR)/main/python/inline.py)' ; \
+		cat $(SOURCE_DIR)/global/init_rule.mak | sed 's/init_rule.py/'"$$INLINE"'/' > $@
+
+%.py :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Python Module
 	@mkdir -p $(BUILD_DIR)
-	@cat $+ > $(BUILD_DIR)/$@
+	@cat $^ > $(BUILD_DIR)/$@
+
+%.mak :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Makefile Module
+	@mkdir -p $(BUILD_DIR)
+	@cat $^ > $(BUILD_DIR)/$@
 
 $(CLEAN) : $(ENVIRONMENT_INFO)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
