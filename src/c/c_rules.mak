@@ -36,7 +36,7 @@ $(TEMP_DIR)/%.o : %.c
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Compile $^
 	@$(CC) $(CC_COMPILE_OPTS) -c $< -o $@
 
-$(BUILD_TARGET) : $(addprefix $(TEMP_DIR)/, $(OBJECT_FILES))
+$(BUILD_TARGETS) : $(addprefix $(TEMP_DIR)/, $(OBJECT_FILES))
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Link $^
 	@$(CC) $(CC_LINK_OPTS) $^ -o $@
 
