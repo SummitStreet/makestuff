@@ -23,7 +23,7 @@
 
 # makestuff/src/javascript/javascript.mak
 
-include $(MAKEFILE_DIR)/global_rules.mak
+include $(MAKESTUFF)/global_rules.mak
 
 .SUFFIXES :
 .SUFFIXES : .js .js.git

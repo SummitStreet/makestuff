@@ -23,7 +23,7 @@
 
 # makestuff/src/javascript/javascript_vars.mak
 
-include $(MAKEFILE_DIR)/global_vars.mak
+include $(MAKESTUFF)/global_vars.mak
 
 SED_SLC_REGEX="/\/\//d"
 SED_MLC_REGEX="/\/\*\*/,/\*\//d"

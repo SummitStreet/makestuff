@@ -23,7 +23,7 @@
 
 # makestuff/src/c/c_vars.mak
 
-include $(MAKEFILE_DIR)/global_vars.mak
+include $(MAKESTUFF)/global_vars.mak
 
 CC=gcc
 CC_COMPILE_OPTS=-std=c99

@@ -23,7 +23,7 @@
 
 # makestuff/src/c/c_rules.mak
 
-include $(MAKEFILE_DIR)/global_rules.mak
+include $(MAKESTUFF)/global_rules.mak
 
 ### Build process-specific goals.
 
