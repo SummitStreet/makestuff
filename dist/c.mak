@@ -21,12 +21,45 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# makestuff/src/python/python_vars.mak
+# makestuff/src/global/init_rule.mak
 
-include $(MAKESTUFF)/global_vars.mak
+EXT_DIR=.dependencies
+GIT_CLONE="git clone --branch {ver} https://{repo}.git {dir} >/dev/null 2>/dev/null"
+MAKESTUFF_REPO=github.com/SummitStreet/makestuff@master.git
+MAKESTUFF=$(EXT_DIR)/github.com/SummitStreet/makestuff/master/dist
 
-PYTHON=python
-PYTHON_ARGS=
-PYLINT=pylint
-PYLINT_ARGS=-r n -E --persistent=n
-PYTHON_IMPORT_MACRO="\#{IMPORT}"
+all :
+
+### Initialize/bootstrap makestuff environment
+### usage: make [-f <makefile>] init [EXT_DIR=<external_dependency_root_directory>]
+
+init :
+	@python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(sys.argv[3].format(repo=R, ver=V[1:], dir=D))' $(EXT_DIR) $(MAKESTUFF_REPO) $(GIT_CLONE)
+
+.PHONY : init
+
+# makestuff/src/c/c.mak
+
+-include $(MAKESTUFF)/c_vars.mak
+
+vpath %.h $(SOURCE_DIR)/main/c
+vpath %.c $(SOURCE_DIR)/main/c
+
+BUILD_DEPENDENCIES=\
+	github.com/account/repo.git
+
+BUILD_TARGETS=\
+	executable
+
+TEST_TARGETS=
+
+SOURCE_FILES=\
+	main.c
+
+OBJECT_FILES=$(SOURCE_FILES:.c=.o)
+
+component.o : $(SOURCE_DIR)/main/c/component.c
+
+test.c : $(SOURCE_DIR)/test/c/test.c
+
+-include $(MAKESTUFF)/c_rules.mak

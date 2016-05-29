@@ -21,22 +21,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# etc/src/javascript/javascript_vars.mak
+# makestuff/src/javascript/javascript_vars.mak
 
 include $(MAKEFILE_DIR)/global_vars.mak
-
-###
-### Build process variable definitions.
-###
-### PACKAGE_MODULES
-###	A list of the classes that comprise the package.
-### PACKAGE_CLASSPATH
-###	Package level classpath which is combined with other classpath info.
-### PROJECT_NAME
-###	The name of the project.
 
 SED_SLC_REGEX="/\/\//d"
 SED_MLC_REGEX="/\/\*\*/,/\*\//d"
 NPM_DIR=node_modules
 NPM=npm
+NPM_ARGS=
 NODE=node
+NODE_ARGS=

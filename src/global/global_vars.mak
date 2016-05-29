@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# etc/src/global/global_vars.mak
+# makestuff/src/global/global_vars.mak
 
 SHELL=/bin/sh
 

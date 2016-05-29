@@ -50,6 +50,9 @@ $(ALL) :
 BUILD_TARGETS=\
 	global_rules.mak \
 	global_vars.mak \
+	c.mak \
+	c_rules.mak \
+	c_vars.mak \
 	javascript.mak \
 	javascript_rules.mak \
 	javascript_vars.mak \
@@ -63,6 +66,17 @@ global_rules.mak : \
 
 global_vars.mak : \
 	$(SOURCE_DIR)/global/global_vars.mak
+
+c.mak : \
+	$(SOURCE_DIR)/global/license.mak \
+	$(TEMP_DIR)/init_rule.mak+py \
+	$(SOURCE_DIR)/c/c.mak
+
+c_rules.mak : \
+	$(SOURCE_DIR)/c/c_rules.mak
+
+c_vars.mak : \
+	$(SOURCE_DIR)/c/c_vars.mak
 
 javascript.mak : \
 	$(SOURCE_DIR)/global/license.mak \

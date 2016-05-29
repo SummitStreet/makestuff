@@ -21,12 +21,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# makestuff/src/python/python_vars.mak
+# makestuff/src/c/c_vars.mak
 
-include $(MAKESTUFF)/global_vars.mak
+include $(MAKEFILE_DIR)/global_vars.mak
 
-PYTHON=python
-PYTHON_ARGS=
-PYLINT=pylint
-PYLINT_ARGS=-r n -E --persistent=n
-PYTHON_IMPORT_MACRO="\#{IMPORT}"
+CC=gcc
+CC_COMPILE_OPTS=-std=c99
+CC_LINK_OPTS=

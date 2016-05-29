@@ -25,16 +25,6 @@
 
 include $(MAKESTUFF)/global_vars.mak
 
-###
-### Build process variable definitions.
-###
-### PACKAGE_MODULES
-###	A list of the classes that comprise the package.
-### PACKAGE_CLASSPATH
-###	Package level classpath which is combined with other classpath info.
-### PROJECT_NAME
-###	The name of the project.
-
 PYTHON=python
 PYTHON_ARGS=
 PYLINT=pylint

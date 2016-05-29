@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# etc/src/javascript/javascript.mak
+# makestuff/src/javascript/javascript.mak
 
 include $(MAKEFILE_DIR)/global_rules.mak
 
@@ -40,7 +40,7 @@ $(MODULE_PARAMETERS) :
 
 %.js.git :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install NPM Dependencies
-	@if [ -a "$(NPM_DIR)/$(notdir $(basename $@))" ]; then echo >/dev/null ; else $(NPM) install git://$@ > /dev/null ; fi
+	@if [ -a "$(NPM_DIR)/$(notdir $(basename $@))" ]; then echo >/dev/null ; else $(NPM) $(NPM_ARGS) install $(GIT_PROTOCOL)://$@ > /dev/null ; fi
 
 %.js :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
@@ -51,4 +51,4 @@ $(MODULE_PARAMETERS) :
 
 $(RUN_TESTS) : $(TEST_TARGETS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
-	@$(foreach test,$(TEST_TARGETS),$(NODE) $(BUILD_DIR)/$(test))
+	@$(foreach test,$^,$(NODE) $(NODE_ARGS) $(BUILD_DIR)/$(test))

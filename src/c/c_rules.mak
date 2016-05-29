@@ -21,12 +21,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# makestuff/src/python/python_vars.mak
+# makestuff/src/c/c_rules.mak
 
-include $(MAKESTUFF)/global_vars.mak
+include $(MAKEFILE_DIR)/global_rules.mak
 
-PYTHON=python
-PYTHON_ARGS=
-PYLINT=pylint
-PYLINT_ARGS=-r n -E --persistent=n
-PYTHON_IMPORT_MACRO="\#{IMPORT}"
+### Build process-specific goals.
+
+$(MODULE_PARAMETERS) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] CC="$(CC)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] CC_COMPILE_OPTS="$(CC_COMPILE_OPTS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] CC_LINK_OPTS="$(CC_LINK_OPTS)"
+
+$(TEMP_DIR)/%.o : %.c
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Compile $^
+	@$(CC) $(CC_COMPILE_OPTS) -c $< -o $@
+
+$(BUILD_TARGET) : $(addprefix $(TEMP_DIR)/, $(OBJECT_FILES))
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Link $^
+	@$(CC) $(CC_LINK_OPTS) $^ -o $@
+
+$(RUN_TESTS) : $(TEST_TARGETS)
+	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
