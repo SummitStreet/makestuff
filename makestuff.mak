@@ -98,6 +98,7 @@ $(TEMP_DIR)/init_rule.mak+py :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Python Module
 	@mkdir -p $(BUILD_DIR)
 	@cat $^ > $(BUILD_DIR)/$@
+	@pylint -r n -E --persistent=n $(BUILD_DIR)/$@ 2>/dev/null
 
 %.mak :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Makefile Module
