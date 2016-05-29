@@ -47,7 +47,9 @@ $(CLEAN) : $(ENVIRONMENT_INFO) $(MODULE_CLEAN) $(COMPONENT_CLEAN)
 
 $(DISTCLEAN) : $(ENVIRONMENT_INFO)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
+	@rm -rf $(TEMP_DIR)
 	@rm -rf $(BUILD_DIR)
+	@rm -rf $(EXT_DIR)
 
 $(GLOBAL_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] SELF="$(SELF)"
