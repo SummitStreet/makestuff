@@ -34,10 +34,12 @@ $(MODULE_PARAMETERS) :
 
 $(TEMP_DIR)/%.o : %.c
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Compile $^
+	@mkdir -p $(TEMP_DIR)
 	@$(CC) $(CC_COMPILE_OPTS) -c $< -o $@
 
 $(BUILD_TARGETS) : $(addprefix $(TEMP_DIR)/, $(OBJECT_FILES))
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Link $^
+	@mkdir -p $(DIST_DIR)
 	@$(CC) $(CC_LINK_OPTS) $^ -o $@
 
 $(RUN_TESTS) : $(TEST_TARGETS)
