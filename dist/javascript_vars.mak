@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# makestuff/src/javascript/javascript_vars.mak
+#** makestuff/src/javascript/javascript_vars.mak
 
 include $(MAKESTUFF)/global_vars.mak
 

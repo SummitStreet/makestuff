@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# makestuff/src/c/c_rules.mak
+#** makestuff/src/c/c_rules.mak
 
 include $(MAKESTUFF)/global_rules.mak
 

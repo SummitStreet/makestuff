@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# makestuff/src/python/python_rules.mak
+#** makestuff/src/python/python_rules.mak
 
 include $(MAKESTUFF)/global_rules.mak
 

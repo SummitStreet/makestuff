@@ -17,9 +17,9 @@ This code is embedded inline into makestuff makefiles to simplify retrieval of
 the makestuff git repo.
 """
 
-#** makestuff/src/main/python/init_rule.py
+#** makestuff/src/main/python/makestuff_init.py
 
-#pylint: disable=expression-not-assigned
+#pylint: disable=
 
 import os
 import re

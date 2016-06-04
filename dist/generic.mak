@@ -38,24 +38,14 @@ init :
 
 .PHONY : init
 
-#** makestuff/src/c/c.mak
+#** makestuff/src/generic/generic.mak
 
--include $(MAKESTUFF)/c_vars.mak
-
-vpath %.h $(SOURCE_DIR)/main/c
-vpath %.c $(SOURCE_DIR)/main/c
+-include $(MAKESTUFF)/generic_vars.mak
 
 BUILD_DEPENDENCIES=\
-	github.com/account/repo.git
-
-SOURCE_FILES=\
-	main.c
+	github.com/account/repo@version.git
 
 BUILD_TARGETS=\
-	executable
+	component.ext
 
-TEST_TARGETS=
-
-OBJECT_FILES=$(SOURCE_FILES:.c=.o)
-
--include $(MAKESTUFF)/c_rules.mak
+-include $(MAKESTUFF)/generic_rules.mak

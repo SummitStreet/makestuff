@@ -1,5 +1,5 @@
 
-# makestuff/src/javascript/javascript.mak
+#** makestuff/src/javascript/javascript.mak
 
 -include $(MAKESTUFF)/javascript_vars.mak
 

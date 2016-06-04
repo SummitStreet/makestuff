@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# makestuff/src/c/c_vars.mak
+#** makestuff/src/c/c_vars.mak
 
 include $(MAKESTUFF)/global_vars.mak
 

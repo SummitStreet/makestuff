@@ -21,12 +21,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# makestuff/src/global/init_rule.mak
+#** makestuff/src/global/init_rule.mak
 
 EXT_DIR=.dependencies
-GIT_CLONE="git clone --branch {ver} https://{repo}.git {dir} >/dev/null 2>/dev/null"
 MAKESTUFF_REPO=github.com/SummitStreet/makestuff@master.git
-MAKESTUFF=$(EXT_DIR)/github.com/SummitStreet/makestuff/master/dist
+MAKESTUFF=`python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; print os.sep.join([sys.argv[1], R, V[1:]])' $(EXT_DIR) $(MAKESTUFF_REPO)`
+GIT_CLONE="git clone --branch {ver} https://{repo}.git {dir} >/dev/null 2>/dev/null"
 
 all :
 
@@ -38,7 +38,7 @@ init :
 
 .PHONY : init
 
-# makestuff/src/python/python.mak
+#** makestuff/src/python/python.mak
 
 -include $(MAKESTUFF)/python_vars.mak
 

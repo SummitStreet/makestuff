@@ -53,6 +53,9 @@ BUILD_TARGETS=\
 	c.mak \
 	c_rules.mak \
 	c_vars.mak \
+	generic.mak \
+	generic_rules.mak \
+	generic_vars.mak \
 	javascript.mak \
 	javascript_rules.mak \
 	javascript_vars.mak \
@@ -77,6 +80,17 @@ c_rules.mak : \
 
 c_vars.mak : \
 	$(SOURCE_DIR)/c/c_vars.mak
+
+generic.mak : \
+	$(SOURCE_DIR)/global/license.mak \
+	$(TEMP_DIR)/init_rule.mak+py \
+	$(SOURCE_DIR)/generic/generic.mak
+
+generic_rules.mak : \
+	$(SOURCE_DIR)/generic/generic_rules.mak
+
+generic_vars.mak : \
+	$(SOURCE_DIR)/generic/generic_vars.mak
 
 javascript.mak : \
 	$(SOURCE_DIR)/global/license.mak \
@@ -105,8 +119,7 @@ makestuff.py : \
 
 $(TEMP_DIR)/init_rule.mak+py :
 	@mkdir -p $(TEMP_DIR)
-	@INLINE='$(shell cat $(SOURCE_DIR)/main/python/init_rule.py | python $(SOURCE_DIR)/main/python/inline.py)' ; \
-		cat $(SOURCE_DIR)/global/init_rule.mak | sed 's/init_rule.py/'"$$INLINE"'/' > $@
+	@cat $(SOURCE_DIR)/global/init_rule.mak | sed 's/makestuff_init.py/$(shell cat $(SOURCE_DIR)/main/python/makestuff_init.py | python $(SOURCE_DIR)/main/python/inline.py)/' | sed 's/makestuff_path.py/$(shell cat $(SOURCE_DIR)/main/python/makestuff_path.py | python $(SOURCE_DIR)/main/python/inline.py)/' > $@
 
 %.py :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Python Module

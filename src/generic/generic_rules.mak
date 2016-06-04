@@ -21,40 +21,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#** makestuff/src/python/python_rules.mak
+#** makestuff/src/generic/generic_rules.mak
 
 include $(MAKESTUFF)/global_rules.mak
 
 .SUFFIXES :
-.SUFFIXES : .py
 
 ### Build process-specific goals.
-
-$(MODULE_CLEAN) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
-
-$(MODULE_PARAMETERS) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON="$(PYTHON)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_ARGS="$(PYTHON_ARGS)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT="$(PYLINT)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT_ARGS="$(PYLINT_ARGS)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_IMPORT_MACRO="$(PYTHON_IMPORT_MACRO)"
-
-%.py :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
-	@mkdir -p $(BUILD_DIR)
-	@if [ -n "$^" ]; then \
-		if cat $^ | grep -q $(PYTHON_IMPORT_MACRO) ; then \
-			mkdir -p $(TEMP_DIR) ; \
-			cat $^ | grep "^from.*import\|^import" | uniq > $(TEMP_DIR)/$@.imports ; \
-			cat $^ | sed "/import/d" | sed -e "/$(PYTHON_IMPORT_MACRO)/ {" -e "r $(TEMP_DIR)/$@.imports" -e "d" -e "}" > $(BUILD_DIR)/$@ ; \
-			rm -fr $(TEMP_DIR) ; \
-		else \
-			cat $^ > $(BUILD_DIR)/$@ ; \
-		fi ; \
-	fi
-	@$(PYLINT) $(PYLINT_ARGS) $(BUILD_DIR)/$@ 2>/dev/null
-
-$(RUN_TESTS) : $(TEST_TARGETS)
-	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
-	@$(foreach test,$^,$(PYLINT) $(PYLINT_ARGS) $(test) ; $(PYTHON) $(PYTHON_ARGS) $(test))

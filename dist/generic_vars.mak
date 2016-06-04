@@ -21,41 +21,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#** makestuff/src/global/init_rule.mak
+#** makestuff/src/generic/generic_vars.mak
 
-EXT_DIR=.dependencies
-MAKESTUFF_REPO=github.com/SummitStreet/makestuff@master.git
-MAKESTUFF=`python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; print os.sep.join([sys.argv[1], R, V[1:]])' $(EXT_DIR) $(MAKESTUFF_REPO)`
-GIT_CLONE="git clone --branch {ver} https://{repo}.git {dir} >/dev/null 2>/dev/null"
-
-all :
-
-### Initialize/bootstrap makestuff environment
-### usage: make [-f <makefile>] init [EXT_DIR=<external_dependency_root_directory>]
-
-init :
-	@python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(sys.argv[3].format(repo=R, ver=V[1:], dir=D))' $(EXT_DIR) $(MAKESTUFF_REPO) $(GIT_CLONE)
-
-.PHONY : init
-
-#** makestuff/src/c/c.mak
-
--include $(MAKESTUFF)/c_vars.mak
-
-vpath %.h $(SOURCE_DIR)/main/c
-vpath %.c $(SOURCE_DIR)/main/c
-
-BUILD_DEPENDENCIES=\
-	github.com/account/repo.git
-
-SOURCE_FILES=\
-	main.c
-
-BUILD_TARGETS=\
-	executable
-
-TEST_TARGETS=
-
-OBJECT_FILES=$(SOURCE_FILES:.c=.o)
-
--include $(MAKESTUFF)/c_rules.mak
+include $(MAKESTUFF)/global_vars.mak

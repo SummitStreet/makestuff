@@ -16,6 +16,8 @@ import sys
 SRC = re.sub(re.compile("#.*?\n|\r|\r\n"), "", sys.stdin.read())
 SRC = re.sub(re.compile("\"{3}.*?\"{3}", re.DOTALL), "", SRC)
 LINES = [i for i in SRC.splitlines(False) if i]
-IMPORTS = "import " + ", ".join([i.split()[1] for i in LINES if i.startswith("import")]) + " ; "
-CODE = " ; ".join([i for i in LINES if not i.startswith("import")])
+IMPORTS = [i.split()[1] for i in LINES if i.startswith("import")]
+IMPORTS = "" if not IMPORTS else "import " + ", ".join(IMPORTS) + " ; "
+LINES = [i for i in LINES if not i.startswith("import")]
+CODE = "".join([("" if not i or j[:1].isspace() else " ; ") + j for i, j in enumerate(LINES)])
 print IMPORTS + CODE

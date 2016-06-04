@@ -1,10 +1,10 @@
 
-# makestuff/src/global/init_rule.mak
+#** makestuff/src/global/init_rule.mak
 
 EXT_DIR=.dependencies
-GIT_CLONE="git clone --branch {ver} https://{repo}.git {dir} >/dev/null 2>/dev/null"
 MAKESTUFF_REPO=github.com/SummitStreet/makestuff@master.git
-MAKESTUFF=$(EXT_DIR)/github.com/SummitStreet/makestuff/master/dist
+MAKESTUFF=`python -c 'makestuff_path.py' $(EXT_DIR) $(MAKESTUFF_REPO)`
+GIT_CLONE="git clone --branch {ver} https://{repo}.git {dir} >/dev/null 2>/dev/null"
 
 all :
 
@@ -12,6 +12,6 @@ all :
 ### usage: make [-f <makefile>] init [EXT_DIR=<external_dependency_root_directory>]
 
 init :
-	@python -c 'init_rule.py' $(EXT_DIR) $(MAKESTUFF_REPO) $(GIT_CLONE)
+	@python -c 'makestuff_init.py' $(EXT_DIR) $(MAKESTUFF_REPO) $(GIT_CLONE)
 
 .PHONY : init

@@ -1,5 +1,5 @@
 
-# makestuff/src/python/python.mak
+#** makestuff/src/python/python.mak
 
 -include $(MAKESTUFF)/python_vars.mak
 
