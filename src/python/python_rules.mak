@@ -38,6 +38,7 @@ $(MODULE_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_ARGS="$(PYTHON_ARGS)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT="$(PYLINT)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT_ARGS="$(PYLINT_ARGS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_PATH="$(PYTHON_PATH)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_IMPORT_MACRO="$(PYTHON_IMPORT_MACRO)"
 
 %.py :
@@ -55,6 +56,11 @@ $(MODULE_PARAMETERS) :
 	fi
 	@$(PYLINT) $(PYLINT_ARGS) $(BUILD_DIR)/$@ 2>/dev/null
 
-$(RUN_TESTS) : $(TEST_TARGETS)
-	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
-	@$(foreach test,$^,$(PYLINT) $(PYLINT_ARGS) $(test) ; $(PYTHON) $(PYTHON_ARGS) $(test))
+%.py+test :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Test Module
+	@export PYTHONPATH=$(PYTHON_PATH):$(PYTHONPATH) ; \
+		$(PYLINT) $(PYLINT_ARGS) $(*D)/$(*F).py 2>/dev/null ; \
+		$(PYTHON) $(PYTHON_ARGS) $(*D)/$(*F).py
+
+$(RUN_TESTS) : $(patsubst %.py,%.py+test,$(TEST_TARGETS))
+	@echo $(NOW) [SYS] [$(SELF)] [$@] $(TEST_TARGETS)

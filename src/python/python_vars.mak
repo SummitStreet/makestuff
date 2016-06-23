@@ -29,4 +29,5 @@ PYTHON=python
 PYTHON_ARGS=
 PYLINT=pylint
 PYLINT_ARGS=-r n -E --persistent=n
+PYTHON_PATH=
 PYTHON_IMPORT_MACRO="\#{IMPORT}"
