@@ -25,8 +25,7 @@
 
 EXT_DIR=.dependencies
 MAKESTUFF_REPO=github.com/SummitStreet/makestuff@master.git
-MAKESTUFF=`python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; print os.sep.join([sys.argv[1], R, V[1:]])' $(EXT_DIR) $(MAKESTUFF_REPO)`
-GIT_CLONE="git clone --branch {ver} https://{repo}.git {dir} >/dev/null 2>/dev/null"
+MAKESTUFF=$(shell python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; print os.sep.join([sys.argv[1], R, V[1:]])' $(EXT_DIR) $(MAKESTUFF_REPO))
 
 all :
 
@@ -34,7 +33,8 @@ all :
 ### usage: make [-f <makefile>] init [EXT_DIR=<external_dependency_root_directory>]
 
 init :
-	@python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(sys.argv[3].format(repo=R, ver=V[1:], dir=D))' $(EXT_DIR) $(MAKESTUFF_REPO) $(GIT_CLONE)
+	@python -c 'import os, re, sys ; C = "git clone --branch {1} https://{0}.git {2}" ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(C.format(R, V[1:], D))' $(EXT_DIR) $(MAKESTUFF_REPO) >/dev/null 2>/dev/null
+	@rm -fr $(EXT_DIR)/.makestuff ; mv $(MAKESTUFF)/dist $(EXT_DIR)/.makestuff ; rm -fr $(MAKESTUFF) ; mv $(EXT_DIR)/.makestuff $(MAKESTUFF)
 
 .PHONY : init
 

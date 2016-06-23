@@ -117,8 +117,9 @@ python_vars.mak : \
 makestuff.py : \
 	$(SOURCE_DIR)/main/python/makestuff.py
 
-$(TEMP_DIR)/init_rule.mak+py :
+$(TEMP_DIR)/init_rule.mak+py : $(SOURCE_DIR)/main/python/inline.py $(SOURCE_DIR)/main/python/makestuff_init.py $(SOURCE_DIR)/main/python/makestuff_path.py
 	@mkdir -p $(TEMP_DIR)
+	$(foreach script,$^,$(shell pylint -r n -E --persistent=n $(script) 2>/dev/null))
 	@cat $(SOURCE_DIR)/global/init_rule.mak | sed 's/makestuff_init.py/$(shell cat $(SOURCE_DIR)/main/python/makestuff_init.py | python $(SOURCE_DIR)/main/python/inline.py)/' | sed 's/makestuff_path.py/$(shell cat $(SOURCE_DIR)/main/python/makestuff_path.py | python $(SOURCE_DIR)/main/python/inline.py)/' > $@
 
 %.py :

@@ -1,0 +1,11 @@
+
+{
+	"name" : "",
+	"description" : "",
+	"url" : "",
+	"components" : [
+	],
+	"dependencies" : [
+		"github.com/SummitStreet/makestuff@master.git"
+	]
+}

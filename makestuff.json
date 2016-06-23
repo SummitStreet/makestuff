@@ -1,0 +1,25 @@
+
+{
+	"name" : "makestuff",
+	"description" : "A makefile-based module manager.",
+	"url" : "https://github.com/SummitStreet/makestuff",
+	"components" : [
+		"dist/c.mak",
+		"dist/c_rules.mak",
+		"dist/c_vars.mak",
+		"dist/generic.mak",
+		"dist/generic_rules.mak",
+		"dist/generic_vars.mak",
+		"dist/global_rules.mak",
+		"dist/global_vars.mak",
+		"dist/javascript.mak",
+		"dist/javascript_rules.mak",
+		"dist/javascript_vars.mak",
+		"dist/makestuff.py",
+		"dist/python.mak",
+		"dist/python_rules.mak",
+		"dist/python_vars.mak"
+	],
+	"dependencies" : [
+	]
+}
