@@ -29,37 +29,33 @@
 
 %.git :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install GIT Dependencies
-	@namespace=$(shell echo "$@" | sed -n $(SED_REPO_NAMESPACE)) ; \
-		version=$(shell echo "$@" | sed -n $(SED_REPO_VERSION)) ; \
-		if [ -z "$$version" ]; then \
-			version="master" ; \
-		fi ; \
-		package_dir=$(REPO_DIR)/$$namespace/$$version ; \
-		if [ ! -d "$$package_dir" ]; then \
-			mkdir -p $$package_dir ; \
-			$(GIT) clone --branch $$version $(GIT_PROTOCOL)://$$namespace.git $$package_dir >/dev/null 2>/dev/null ; \
-		fi
+	$(PYTHON) $(MAKESTUFF)/makestuff.py --repo $@ install
 
 $(CLEAN) : $(ENVIRONMENT_INFO) $(MODULE_CLEAN) $(COMPONENT_CLEAN)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
 	@rm -rf $(TEMP_DIR)
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(DIST_DIR)
 
 $(DISTCLEAN) : $(ENVIRONMENT_INFO)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
 	@rm -rf $(TEMP_DIR)
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(DIST_DIR)
 	@rm -rf $(REPO_DIR)
 
 $(GLOBAL_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] SELF="$(SELF)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] ENV="$(ENV)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] BUILD_DIR="$(BUILD_DIR)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] DIST_DIR="$(DIST_DIR)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] REPO_DIR="$(REPO_DIR)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] SOURCE_DIR="$(SOURCE_DIR)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] TEMP_DIR="$(TEMP_DIR)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] MAKESTUFF="$(MAKESTUFF)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] BUILD_DEPENDENCIES="$(BUILD_DEPENDENCIES)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] BUILD_TARGETS="$(BUILD_TARGETS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] GIT="$(GIT)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] GIT_PROTOCOL="$(GIT_PROTOCOL)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] GIT_CLONE="$(GIT_CLONE)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON="$(PYTHON)"
 
 $(ENVIRONMENT_INFO) : $(GLOBAL_PARAMETERS) $(MODULE_PARAMETERS) $(COMPONENT_PARAMETERS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Environment Info

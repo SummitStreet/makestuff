@@ -38,7 +38,7 @@ SELF=$(strip $(firstword $(MAKEFILE_LIST)))
 DATE_TIME=$(shell if [ "`uname`" == "Darwin" ]; then echo "+%Y-%m-%d %H:%M:%S" ; else echo "+%F %T" ; fi)
 NOW=`date "$(DATE_TIME)"`
 SED_ARGS=$(if grep -c 'Darwin',-i "",-i)
-BUILD_DIR=dist
+DIST_DIR=dist
 SOURCE_DIR=src
 TEMP_DIR=temp
 
@@ -124,22 +124,22 @@ $(TEMP_DIR)/init_rule.mak+py : $(SOURCE_DIR)/main/python/inline.py $(SOURCE_DIR)
 
 %.py :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Python Module
-	@mkdir -p $(BUILD_DIR)
-	@cat $^ > $(BUILD_DIR)/$@
-	@pylint -r n -E --persistent=n $(BUILD_DIR)/$@ 2>/dev/null
+	@mkdir -p $(DIST_DIR)
+	@cat $^ > $(DIST_DIR)/$@
+	@pylint -r n -E --persistent=n $(DIST_DIR)/$@ 2>/dev/null
 
 %.mak :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Makefile Module
-	@mkdir -p $(BUILD_DIR)
-	@cat $^ > $(BUILD_DIR)/$@
+	@mkdir -p $(DIST_DIR)
+	@cat $^ > $(DIST_DIR)/$@
 
 $(CLEAN) : $(ENVIRONMENT_INFO)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
-	@rm -rf $(BUILD_DIR) $(TEMP_DIR)
+	@rm -rf $(DIST_DIR) $(TEMP_DIR)
 
 $(GLOBAL_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] SELF="$(SELF)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] BUILD_DIR="$(BUILD_DIR)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] DIST_DIR="$(DIST_DIR)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] BUILD_TARGETS="$(BUILD_TARGETS)"
 
 $(ENVIRONMENT_INFO) : $(GLOBAL_PARAMETERS)

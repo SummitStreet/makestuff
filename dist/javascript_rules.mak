@@ -44,11 +44,11 @@ $(MODULE_PARAMETERS) :
 
 %.js :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
-	@mkdir -p $(BUILD_DIR)
-	@cat $^ > $(BUILD_DIR)/$@
-	@sed $(SED_ARGS) $(SED_SLC_REGEX) $(BUILD_DIR)/$@
-	@sed $(SED_ARGS) $(SED_MLC_REGEX) $(BUILD_DIR)/$@
+	@mkdir -p $(DIST_DIR)
+	@cat $^ > $(DIST_DIR)/$@
+	@sed $(SED_ARGS) $(SED_SLC_REGEX) $(DIST_DIR)/$@
+	@sed $(SED_ARGS) $(SED_MLC_REGEX) $(DIST_DIR)/$@
 
 $(RUN_TESTS) : $(TEST_TARGETS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
-	@$(foreach test,$^,$(NODE) $(NODE_ARGS) $(BUILD_DIR)/$(test))
+	@$(foreach test,$^,$(NODE) $(NODE_ARGS) $(DIST_DIR)/$(test))
