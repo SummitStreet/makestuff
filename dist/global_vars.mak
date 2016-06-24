@@ -114,4 +114,4 @@ BUILD_INFO=build_info
 BUILD_DIR=dist
 SOURCE_DIR=src
 TEMP_DIR=temp
-EXT_DIR=.dependencies
+REPO_DIR=.makestuff

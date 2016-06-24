@@ -6,8 +6,8 @@ Parses a git URI in the format hostname/org/repo@version.git and then performs
 a git clone on the repository if it is not present in the file system.
 
 This module expects two arguments:
-ext_dir=the directory into which the git repo is cloned
-	(e.g.: .dependencies)
+repo_dir=the directory into which the external repo is cloned
+	(e.g.: .makestuff)
 repo=the the URI of the git repo to be cloned
 	(e.g.: github.com/SummitStreet/makestuff@master.git)
 

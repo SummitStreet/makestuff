@@ -1,7 +1,7 @@
 
 {
 	"name" : "makestuff",
-	"description" : "A makefile-based module manager.",
+	"description" : "A makefile-based module manager & rules that simplify building JavaScript, Python, C, and Java modules.",
 	"url" : "https://github.com/SummitStreet/makestuff",
 	"components" : [
 		"dist/c.mak",

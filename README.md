@@ -1,5 +1,5 @@
 # makestuff
-> A collection of makefile templates that simplify building Javascript, Java, and Python modules.
+> A makefile-based module manager & rules that simplify building JavaScript, Python, C, and Java modules.
 
 ## License
 

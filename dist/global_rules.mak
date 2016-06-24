@@ -34,7 +34,7 @@
 		if [ -z "$$version" ]; then \
 			version="master" ; \
 		fi ; \
-		package_dir=$(EXT_DIR)/$$namespace/$$version ; \
+		package_dir=$(REPO_DIR)/$$namespace/$$version ; \
 		if [ ! -d "$$package_dir" ]; then \
 			mkdir -p $$package_dir ; \
 			$(GIT) clone --branch $$version $(GIT_PROTOCOL)://$$namespace.git $$package_dir >/dev/null 2>/dev/null ; \
@@ -49,7 +49,7 @@ $(DISTCLEAN) : $(ENVIRONMENT_INFO)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
 	@rm -rf $(TEMP_DIR)
 	@rm -rf $(BUILD_DIR)
-	@rm -rf $(EXT_DIR)
+	@rm -rf $(REPO_DIR)
 
 $(GLOBAL_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] SELF="$(SELF)"
