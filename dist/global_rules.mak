@@ -29,7 +29,7 @@
 
 %.git :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install GIT Dependencies
-	$(PYTHON) $(MAKESTUFF)/makestuff.py --repo $@ install
+	@$(PYTHON) $(MAKESTUFF)/makestuff.py --repo $@ install
 
 $(CLEAN) : $(ENVIRONMENT_INFO) $(MODULE_CLEAN) $(COMPONENT_CLEAN)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
