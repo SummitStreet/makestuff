@@ -62,7 +62,8 @@ BUILD_TARGETS=\
 	python.mak \
 	python_rules.mak \
 	python_vars.mak \
-	makestuff.py
+	makestuff.py \
+	makestuff_merge.py
 
 global_rules.mak : \
 	$(SOURCE_DIR)/global/global_rules.mak
@@ -116,6 +117,9 @@ python_vars.mak : \
 
 makestuff.py : \
 	$(SOURCE_DIR)/main/python/makestuff.py
+
+makestuff_merge.py : \
+	$(SOURCE_DIR)/main/python/makestuff_merge.py
 
 $(TEMP_DIR)/init_rule.mak+py : $(SOURCE_DIR)/main/python/inline.py $(SOURCE_DIR)/main/python/makestuff_init.py $(SOURCE_DIR)/main/python/makestuff_path.py
 	@mkdir -p $(TEMP_DIR)

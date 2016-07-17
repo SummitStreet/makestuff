@@ -44,16 +44,7 @@ $(MODULE_PARAMETERS) :
 %.py :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
 	@mkdir -p $(DIST_DIR)
-	@if [ -n "$^" ]; then \
-		if cat $^ | grep -q $(PYTHON_IMPORT_MACRO) ; then \
-			mkdir -p $(TEMP_DIR) ; \
-			cat $^ | grep "^from.*import\|^import" | uniq > $(TEMP_DIR)/$@.imports ; \
-			cat $^ | sed "/import/d" | sed -e "/$(PYTHON_IMPORT_MACRO)/ {" -e "r $(TEMP_DIR)/$@.imports" -e "d" -e "}" > $(DIST_DIR)/$@ ; \
-			rm -fr $(TEMP_DIR) ; \
-		else \
-			cat $^ > $(DIST_DIR)/$@ ; \
-		fi ; \
-	fi
+	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF)/makestuff_merge.py $^ > $(DIST_DIR)/$@
 	@$(PYLINT) $(PYLINT_ARGS) $(DIST_DIR)/$@ 2>/dev/null
 
 %.py+test :
