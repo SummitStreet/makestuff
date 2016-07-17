@@ -39,7 +39,6 @@ $(MODULE_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT="$(PYLINT)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT_ARGS="$(PYLINT_ARGS)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_PATH="$(PYTHON_PATH)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_IMPORT_MACRO="$(PYTHON_IMPORT_MACRO)"
 
 %.py :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module

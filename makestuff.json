@@ -16,10 +16,12 @@
 		"dist/javascript_rules.mak",
 		"dist/javascript_vars.mak",
 		"dist/makestuff.py",
+		"dist/makestuff_merge.py",
 		"dist/python.mak",
 		"dist/python_rules.mak",
 		"dist/python_vars.mak"
 	],
 	"dependencies" : [
+		"github.com/SummitStreet/launchpad@master.git"
 	]
 }

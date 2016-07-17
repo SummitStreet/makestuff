@@ -42,10 +42,28 @@ DIST_DIR=dist
 SOURCE_DIR=src
 TEMP_DIR=temp
 
+PYTHON=python
+PYTHON_ARGS=
+PYLINT=pylint
+PYLINT_ARGS=-r n -E --persistent=n
+
+REPO_DIR=.makestuff
+LAUNCHPAD_REPO=github.com/SummitStreet/launchpad@master.git
+LAUNCHPAD=$(shell python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; print os.sep.join([sys.argv[1], R, V[1:]])' $(REPO_DIR) $(LAUNCHPAD_REPO))
+
 .SUFFIXES :
 .PHONY : $(ALL) $(CLEAN) $(GLOBAL_PARAMETERS) $(ENVIRONMENT_INFO) $(BUILD_PREAMBLE) $(BUILD) $(BUILD_EPILOGUE)
 
 $(ALL) :
+
+### Initialize/bootstrap makestuff environment
+### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
+
+init :
+	@python -c 'import os, re, sys ; C = "git clone --branch {1} https://{0}.git {2}" ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(C.format(R, V[1:], D))' $(REPO_DIR) $(LAUNCHPAD_REPO) >/dev/null 2>/dev/null
+	@rm -fr $(REPO_DIR)/.tmp ; mv $(LAUNCHPAD)/src/main/python $(REPO_DIR)/.tmp ; rm -fr $(LAUNCHPAD) ; mv $(REPO_DIR)/.tmp $(LAUNCHPAD)
+
+.PHONY : init
 
 BUILD_TARGETS=\
 	global_rules.mak \
@@ -116,6 +134,7 @@ python_vars.mak : \
 	$(SOURCE_DIR)/python/python_vars.mak
 
 makestuff.py : \
+	$(LAUNCHPAD)/app.py \
 	$(SOURCE_DIR)/main/python/makestuff.py
 
 makestuff_merge.py : \
@@ -129,8 +148,8 @@ $(TEMP_DIR)/init_rule.mak+py : $(SOURCE_DIR)/main/python/inline.py $(SOURCE_DIR)
 %.py :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Python Module
 	@mkdir -p $(DIST_DIR)
-	@cat $^ > $(DIST_DIR)/$@
-	@pylint -r n -E --persistent=n $(DIST_DIR)/$@ 2>/dev/null
+	@$(PYTHON) $(PYTHON_ARGS) $(SOURCE_DIR)/main/python/makestuff_merge.py $^ > $(DIST_DIR)/$@
+	@$(PYLINT) $(PYLINT_ARGS) $(DIST_DIR)/$@ 2>/dev/null
 
 %.mak :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Makefile Module

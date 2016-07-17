@@ -1,45 +1,36 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-This module contains the command line interface for he makestuff module.  It
-may be used to install and remove modules stored in an external repository.  By
-default:
-
-1) repositories are assumed to be git-based
-2) repositories are stored in the directory .makestuff
-
-Example (install a repo):
-	makestuff.py --repo github.com/SummitStreet/makestuff@master.git install
-
-Example (refresh/update a repo):
-	makestuff.py --repo github.com/SummitStreet/makestuff@master.git remove install
-
-Example (remove a repo):
-	makestuff.py --repo github.com/SummitStreet/makestuff@master.git remove
-
-Example (remove all repos):
-	makestuff.py removeall
-"""
 
 #** makestuff/src/main/python/makestuff.py
 
-#pylint: disable=bad-continuation, bare-except, mixed-indentation
+# This module contains the command line interface for he makestuff module.  It
+# may be used to install and remove modules stored in an external repository.
+# By default:
+#
+# 1) repositories are assumed to be git-based
+# 2) repositories are stored in the directory .makestuff
+#
+# Example (install a repo):
+# 	makestuff.py --repo github.com/SummitStreet/makestuff@master.git install
+#
+# Example (refresh/update a repo):
+# 	makestuff.py --repo github.com/SummitStreet/makestuff@master.git remove install
+#
+# Example (remove a repo):
+# 	makestuff.py --repo github.com/SummitStreet/makestuff@master.git remove
+#
+# Example (remove all repos):
+# 	makestuff.py removeall
 
-import argparse
-import codecs
 import json
 import os
 import re
 import shutil
-import sys
 
 REPO_CLONE = "git clone -q --branch {ver} https://{repo}.git {dir}"
 REPO_DIR = ".makestuff"
 CONFIG_FILE = "makestuff.json"
 TEMP_DIR = ".tmp"
 
-class MakeStuff(object):
+class MakeStuff(CommandLineApp):
 	"""
 	Implements the CLI of the makestuff module.
 	"""
@@ -51,37 +42,6 @@ class MakeStuff(object):
 	temp_dir = None
 	config = None
 	command = []
-
-	def __init__(self, description, command_line_args, *args):
-		"""
-		Ensures that the comamand-line is configured/initialized.
-		"""
-		self.__config(description, command_line_args, args)
-
-	def __config(self, description, command_line_args, configurable_types):
-		"""
-		Initializes the ArgumentParser and injects command-line arguments as
-		static variables into the types defined in the module.
-		"""
-		writer = codecs.getwriter("utf8")
-		sys.stdout = writer(sys.stdout)
-
-		# Create and initialize an ArgumentParser.
-		parser = argparse.ArgumentParser(description=description)
-		parser.add_argument("--version", action="version", version="%(prog)s v" + str(self._version))
-		for i in command_line_args:
-			params = dict(required=i[1], type=i[2], nargs=i[3], default=i[4], action=i[5], help=i[6])
-			# Positional arguments do not use required.
-			if i[:2] != "--":
-				del params["required"]
-			parser.add_argument(i[0], **params)
-
-		# Inject argument values into all types within the module with matching
-		# names.
-		for key, value in vars(parser.parse_args()).iteritems():
-			for obj in configurable_types:
-				if hasattr(obj, key):
-					setattr(obj, key, value)
 
 	def _load_config_file(self, repo_dir):
 		"""
@@ -154,10 +114,11 @@ class MakeStuff(object):
 		print msg.format(sys.argv[0], self.repo_dir)
 		shutil.rmtree(self.repo_dir, True)
 
-	def run(self):
+	def start(self):
 		"""
 		Invokes all commands provided via the command line.
 		"""
+		super(MakeStuff, self).start()
 		try:
 			for i in self.command:
 				getattr(self, i)()

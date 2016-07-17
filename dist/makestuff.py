@@ -1,62 +1,138 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#** launchpad/src/main/python/app.py
+
 """
-This module contains the command line interface for he makestuff module.  It
-may be used to install and remove modules stored in an external repository.  By
-default:
+	The MIT License (MIT)
 
-1) repositories are assumed to be git-based
-2) repositories are stored in the directory .makestuff
+	Copyright (c) 2016 David Padgett/Summit Street, Inc.
 
-Example (install a repo):
-	makestuff.py --repo github.com/SummitStreet/makestuff@master.git install
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
 
-Example (refresh/update a repo):
-	makestuff.py --repo github.com/SummitStreet/makestuff@master.git remove install
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
 
-Example (remove a repo):
-	makestuff.py --repo github.com/SummitStreet/makestuff@master.git remove
-
-Example (remove all repos):
-	makestuff.py removeall
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
 """
-
-#** makestuff/src/main/python/makestuff.py
 
 #pylint: disable=bad-continuation, bare-except, mixed-indentation
 
+from abc import ABCMeta, abstractmethod
 import argparse
 import codecs
+import datetime
+import inspect
 import json
+import logging
 import os
 import re
 import shutil
 import sys
+import traceback
 
-REPO_CLONE = "git clone -q --branch {ver} https://{repo}.git {dir}"
-REPO_DIR = ".makestuff"
-CONFIG_FILE = "makestuff.json"
-TEMP_DIR = ".tmp"
+class CommandLineApp(object):
+	"""
+	This abstract class implements the shell of an command-line app.
+	"""
+	__metaclass__ = ABCMeta
+	_version = 0.1
+	start_date_time = None
+	log_level = "WARNING"
+	log_date_format = "%Y-%m-%d %H:%M:%S"
+	log_kv_format = "{0}={1}"
+	log_format = "{date} [{level}] [{app}] [{api}] [{message}] {values}"
 
-class MakeStuff(object):
-	"""
-	Implements the CLI of the makestuff module.
-	"""
-	_version = 1.0
-	repo_clone = None
-	repo_dir = None
-	repo = None
-	config_file = None
-	temp_dir = None
-	config = None
-	command = []
+	# Command-line args format: (name, required, type, nargs, default, action, help)
+	__command_line_args = [
+		("--log-level", False, str, None, log_level, None, u"set the log output level"),
+		("--log-date-format", False, str, None, log_date_format, None, u"set the log date format"),
+		("--log-kv-format", False, str, None, log_kv_format, None, u"set the log key/value format"),
+		("--log-format", False, str, None, log_format, None, u"set the log line format")
+	]
+
+	@classmethod
+	def _format_message(cls, level, message, data):
+		"""
+		Formats a log message.
+		"""
+		date = datetime.datetime.now().strftime(cls.log_date_format)
+		app = sys.argv[0]
+		api = inspect.stack()[2][3]
+		values = ", ".join([cls.log_kv_format.format(i, j) for i, j in data.iteritems()])
+		msg = cls.log_format
+		return msg.format(date=date, app=app, level=level, api=api, message=message, values=values)
+
+	@staticmethod
+	def _get_elapsed_time():
+		"""
+		TODO
+		"""
+		elapsed_date_time = datetime.datetime.now() - CommandLineApp.start_date_time
+		hours, minutes = divmod(elapsed_date_time.seconds, 3600)
+		minutes, seconds = divmod(minutes, 60)
+		return (elapsed_date_time.days * 24 + hours, minutes, seconds)
+
+	@classmethod
+	def log_debug(cls, message, **data):
+		"""
+		Prints a debug level log message.
+		"""
+		logging.debug(cls._format_message("DBG", message, data))
+
+	@classmethod
+	def log_info(cls, message, **data):
+		"""
+		Prints an info level log message.
+		"""
+		logging.info(cls._format_message("INF", message, data))
+
+	@classmethod
+	def log_critical(cls, message, **data):
+		"""
+		Prints a critical level log message.
+		"""
+		logging.critical(cls._format_message("CRI", message, data))
+
+	@classmethod
+	def log_error(cls, message, **data):
+		"""
+		Prints an error level log message.
+		"""
+		logging.error(cls._format_message("ERR", message, data))
+
+	@classmethod
+	def log_system(cls, message, **data):
+		"""
+		Prints a system level log message.
+		"""
+		logging.log(logging.SYSTEM, cls._format_message("SYS", message, data))
+
+	@classmethod
+	def log_warning(cls, message, **data):
+		"""
+		Prints a warning level log message.
+		"""
+		logging.warning(cls._format_message("WRN", message, data))
 
 	def __init__(self, description, command_line_args, *args):
 		"""
 		Ensures that the comamand-line is configured/initialized.
 		"""
-		self.__config(description, command_line_args, args)
+		cli = self.__command_line_args[:]
+		cli.extend(command_line_args)
+		self.__config(description, cli, args)
 
 	def __config(self, description, command_line_args, configurable_types):
 		"""
@@ -82,6 +158,98 @@ class MakeStuff(object):
 			for obj in configurable_types:
 				if hasattr(obj, key):
 					setattr(obj, key, value)
+
+		# Initialize the Python logging module.
+		logging.SYSTEM = 60
+		logging.addLevelName(logging.SYSTEM, "SYSTEM")
+		level = getattr(logging, self.log_level)
+		logging.basicConfig(level=level, format="%(message)s")
+
+		# Display the parameter list.
+		for key, value in vars(parser.parse_args()).iteritems():
+			for obj in configurable_types:
+				if hasattr(obj, key):
+					self.log_info("Parameter", obj=obj.__name__, name=key, value=value)
+
+	def initialize(self):
+		"""
+		App-specific initialization should occur here.
+		"""
+		self.log_system("Initializing {0}".format(type(self).__name__))
+
+	def run(self):
+		"""
+		Runs the app.
+		"""
+		try:
+			CommandLineApp.start_date_time = datetime.datetime.now()
+			self.log_system("Running {0}".format(type(self).__name__))
+			self.initialize()
+			self.start()
+			self.stop()
+			hours, minutes, seconds = self._get_elapsed_time()
+			elapsed_time = "{0}h:{1}m:{2}s".format(hours, minutes, seconds)
+			self.log_system("Succeeded", elapsed_time=elapsed_time)
+		except:
+			hours, minutes, seconds = self._get_elapsed_time()
+			elapsed_time = "{0}h:{1}m:{2}s".format(hours, minutes, seconds)
+			self.log_critical("Failed", elapsed_time=elapsed_time)
+			traceback.print_exc(file=sys.stdout)
+			return -1
+		return 0
+
+	@abstractmethod
+	def start(self):
+		"""
+		App-specific startup tasks should be added here.
+		"""
+		self.log_system("Starting {0}".format(type(self).__name__))
+
+	def stop(self):
+		"""
+		App-specific shutdown tasks should be added here.
+		"""
+		self.log_system("Stopping {0}".format(type(self).__name__))
+
+#** makestuff/src/main/python/makestuff.py
+
+# This module contains the command line interface for he makestuff module.  It
+# may be used to install and remove modules stored in an external repository.
+# By default:
+#
+# 1) repositories are assumed to be git-based
+# 2) repositories are stored in the directory .makestuff
+#
+# Example (install a repo):
+# 	makestuff.py --repo github.com/SummitStreet/makestuff@master.git install
+#
+# Example (refresh/update a repo):
+# 	makestuff.py --repo github.com/SummitStreet/makestuff@master.git remove install
+#
+# Example (remove a repo):
+# 	makestuff.py --repo github.com/SummitStreet/makestuff@master.git remove
+#
+# Example (remove all repos):
+# 	makestuff.py removeall
+
+
+REPO_CLONE = "git clone -q --branch {ver} https://{repo}.git {dir}"
+REPO_DIR = ".makestuff"
+CONFIG_FILE = "makestuff.json"
+TEMP_DIR = ".tmp"
+
+class MakeStuff(CommandLineApp):
+	"""
+	Implements the CLI of the makestuff module.
+	"""
+	_version = 1.0
+	repo_clone = None
+	repo_dir = None
+	repo = None
+	config_file = None
+	temp_dir = None
+	config = None
+	command = []
 
 	def _load_config_file(self, repo_dir):
 		"""
@@ -154,10 +322,11 @@ class MakeStuff(object):
 		print msg.format(sys.argv[0], self.repo_dir)
 		shutil.rmtree(self.repo_dir, True)
 
-	def run(self):
+	def start(self):
 		"""
 		Invokes all commands provided via the command line.
 		"""
+		super(MakeStuff, self).start()
 		try:
 			for i in self.command:
 				getattr(self, i)()
