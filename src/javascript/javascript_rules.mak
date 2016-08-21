@@ -40,11 +40,6 @@ $(MODULE_PARAMETERS) :
 
 %.npm :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install NPM Dependencies
-	@if [ -a "$(NPM_DIR)/$(notdir $(basename $@))" ]; then echo >/dev/null ; else $(NPM) $(NPM_ARGS) install $(GIT_PROTOCOL)://$(basename $@) > /dev/null ; fi
-
-
-%.npm :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Install NPM Dependencies
 	@if [ ! -d "$(NPM_DIR)/$(subst .git,,$(notdir $(basename $@)))" ]; then \
 		if [ ".git" == "$(findstring .git, $(basename $@))" ]; then \
 			$(NPM) $(NPM_ARGS) install $(GIT_PROTOCOL)://$(basename $@) > /dev/null ; \
