@@ -28,6 +28,7 @@ include $(MAKESTUFF)/global_vars.mak
 SED_SLC_REGEX="/\/\//d"
 SED_MLC_REGEX="/\/\*\*/,/\*\//d"
 JSLINT=eslint
+JSLINT_ARGS=
 NPM_DIR=node_modules
 NPM=npm
 NPM_ARGS=

@@ -54,7 +54,7 @@ $(MODULE_PARAMETERS) :
 	@cat $^ > $(DIST_DIR)/$@
 	@sed $(SED_ARGS) $(SED_SLC_REGEX) $(DIST_DIR)/$@
 	@sed $(SED_ARGS) $(SED_MLC_REGEX) $(DIST_DIR)/$@
-	$(JSLINT) $(DIST_DIR)/$@
+	@$(JSLINT) $(JSLINT_ARGS) $(DIST_DIR)/$@
 
 $(RUN_TESTS) : $(TEST_TARGETS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
