@@ -38,9 +38,20 @@ $(MODULE_PARAMETERS) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] ETC_BIN="$(ETC_BIN)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] NPM_DIR="$(NPM_DIR)"
 
-%.js.git :
+%.npm :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install NPM Dependencies
-	@if [ -a "$(NPM_DIR)/$(notdir $(basename $@))" ]; then echo >/dev/null ; else $(NPM) $(NPM_ARGS) install $(GIT_PROTOCOL)://$@ > /dev/null ; fi
+	@if [ -a "$(NPM_DIR)/$(notdir $(basename $@))" ]; then echo >/dev/null ; else $(NPM) $(NPM_ARGS) install $(GIT_PROTOCOL)://$(basename $@) > /dev/null ; fi
+
+
+%.npm :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Install NPM Dependencies
+	@if [ ! -d "$(NPM_DIR)/$(subst .git,,$(notdir $(basename $@)))" ]; then \
+		if [ ".git" == "$(findstring .git, $(basename $@))" ]; then \
+			$(NPM) $(NPM_ARGS) install $(GIT_PROTOCOL)://$(basename $@) > /dev/null ; \
+		else \
+			$(NPM) $(NPM_ARGS) install $(basename $@) > /dev/null ; \
+		fi \
+	fi
 
 %.js :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
@@ -48,6 +59,7 @@ $(MODULE_PARAMETERS) :
 	@cat $^ > $(DIST_DIR)/$@
 	@sed $(SED_ARGS) $(SED_SLC_REGEX) $(DIST_DIR)/$@
 	@sed $(SED_ARGS) $(SED_MLC_REGEX) $(DIST_DIR)/$@
+	$(JSLINT) $(DIST_DIR)/$@
 
 $(RUN_TESTS) : $(TEST_TARGETS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
