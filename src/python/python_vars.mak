@@ -23,10 +23,29 @@
 
 #** makestuff/src/python/python_vars.mak
 
+ifndef __PYTHON_VARS
+
+__PYTHON_VARS=__python_vars
 include $(MAKESTUFF)/global_vars.mak
 
-PYTHON=python
-PYTHON_ARGS=
+# Additional targets.
+
+PYTHON_CLEAN=python_clean
+PYTHON_ENVIRONMENT=python_environment
+PYTHON_TEST=python_test
+
+# Python-specific variables.
+
+CLEAN_TARGETS+=$(PYTHON_CLEAN)
+ENVIRONMENT_TARGETS+=$(PYTHON_ENVIRONMENT)
+TEST_TARGETS+=$(PYTHON_TEST)
+
+MAKESTUFF_MERGE_PY=$(MAKESTUFF)/makestuff_merge.py
 PYLINT=pylint
 PYLINT_ARGS=-r n -E --persistent=n
+PYTHON=python
+PYTHON_ARGS=
 PYTHON_PATH=
+PYTHON_TEST_COMPONENTS=
+
+endif

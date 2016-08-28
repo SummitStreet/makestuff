@@ -23,4 +23,9 @@
 
 #** makestuff/src/generic/generic_vars.mak
 
+ifndef __GENERIC_RULES
+
+__GENERIC_VARS=__generic_vars
 include $(MAKESTUFF)/global_vars.mak
+
+endif

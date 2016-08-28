@@ -9,7 +9,7 @@ BUILD_DEPENDENCIES=\
 BUILD_TARGETS=\
 	component.js
 
-TEST_TARGETS=\
+JAVASCRIPT_TEST_COMPONENTS=\
 	test.js
 
 component.js : $(SOURCE_DIR)/main/javascript/component.js

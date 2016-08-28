@@ -23,27 +23,17 @@
 
 #** makestuff/src/python/python_rules.mak
 
+ifndef __PYTHON_RULES
+
+__PYTHON_RULES=__python_rules
 include $(MAKESTUFF)/global_rules.mak
 
-.SUFFIXES :
-.SUFFIXES : .py
-
-### Build process-specific goals.
-
-$(MODULE_CLEAN) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
-
-$(MODULE_PARAMETERS) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON="$(PYTHON)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_ARGS="$(PYTHON_ARGS)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT="$(PYLINT)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT_ARGS="$(PYLINT_ARGS)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_PATH="$(PYTHON_PATH)"
+.PHONY : $(PYTHON_CLEAN) $(PYTHON_ENVIRONMENT) $(PYTHON_TEST)
 
 %.py :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
 	@mkdir -p $(DIST_DIR)
-	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF)/makestuff_merge.py $^ > $(DIST_DIR)/$@
+	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF_MERGE_PY) $^ > $(DIST_DIR)/$@
 	@$(PYLINT) $(PYLINT_ARGS) $(DIST_DIR)/$@ 2>/dev/null
 
 %.py+test :
@@ -52,5 +42,18 @@ $(MODULE_PARAMETERS) :
 		$(PYLINT) $(PYLINT_ARGS) $(*D)/$(*F).py 2>/dev/null ; \
 		$(PYTHON) $(PYTHON_ARGS) $(*D)/$(*F).py
 
-$(RUN_TESTS) : $(patsubst %.py,%.py+test,$(TEST_TARGETS))
-	@echo $(NOW) [SYS] [$(SELF)] [$@] $(TEST_TARGETS)
+$(PYTHON_CLEAN) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
+
+$(PYTHON_ENVIRONMENT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT="$(PYLINT)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT_ARGS="$(PYLINT_ARGS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON="$(PYTHON)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_ARGS="$(PYTHON_ARGS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_PATH="$(PYTHON_PATH)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_TEST_TARGETS="$(PYTHON_TEST_TARGETS)"
+
+$(PYTHON_TEST) : $(PYTHON_TEST_COMPONENTS) $(patsubst %.py,%.py+test,$(PYTHON_TEST_COMPONENTS))
+	@echo $(NOW) [SYS] [$(SELF)] [$@]
+
+endif

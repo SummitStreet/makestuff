@@ -23,8 +23,9 @@
 
 #** makestuff/src/generic/generic_rules.mak
 
+ifndef __GENERIC_RULES
+
+__GENERIC_RULES=__generic_rules
 include $(MAKESTUFF)/global_rules.mak
 
-.SUFFIXES :
-
-### Build process-specific goals.
+endif

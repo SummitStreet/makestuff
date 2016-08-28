@@ -23,20 +23,24 @@
 
 #** makestuff/src/javascript/javascript.mak
 
+ifndef __JAVASCRIPT_RULES
+
+__JAVASCRIPT_RULES=__javascript_rules
 include $(MAKESTUFF)/global_rules.mak
 
-.SUFFIXES :
-.SUFFIXES : .js .js.git
+.PHONY : $(JAVASCRIPT_CLEAN) $(JAVASCRIPT_ENVIRONMENT) $(JAVASCRIPT_TEST)
 
-### Build process-specific goals.
+%.js :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
+	@mkdir -p $(DIST_DIR)
+	@cat $^ > $(DIST_DIR)/$@
+	@sed $(SED_ARGS) $(SED_SLC_REGEX) $(DIST_DIR)/$@
+	@sed $(SED_ARGS) $(SED_MLC_REGEX) $(DIST_DIR)/$@
+	@$(JSLINT) $(JSLINT_ARGS) $(DIST_DIR)/$@
 
-$(MODULE_CLEAN) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
-	@rm -rf $(NPM_DIR)
-
-$(MODULE_PARAMETERS) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] ETC_BIN="$(ETC_BIN)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] NPM_DIR="$(NPM_DIR)"
+%.js+test :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Test Module
+	@$(NODE) $(NODE_ARGS) $(DIST_DIR)/$(*D)/$(*F).js
 
 %.npm :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install NPM Dependencies
@@ -48,14 +52,23 @@ $(MODULE_PARAMETERS) :
 		fi \
 	fi
 
-%.js :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module
-	@mkdir -p $(DIST_DIR)
-	@cat $^ > $(DIST_DIR)/$@
-	@sed $(SED_ARGS) $(SED_SLC_REGEX) $(DIST_DIR)/$@
-	@sed $(SED_ARGS) $(SED_MLC_REGEX) $(DIST_DIR)/$@
-	@$(JSLINT) $(JSLINT_ARGS) $(DIST_DIR)/$@
+$(JAVASCRIPT_CLEAN) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
+	@rm -rf $(NPM_DIR)
 
-$(RUN_TESTS) : $(TEST_TARGETS)
-	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
-	@$(foreach test,$^,$(NODE) $(NODE_ARGS) $(DIST_DIR)/$(test))
+$(JAVASCRIPT_ENVIRONMENT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] JAVASCRIPT_TEST_COMPONENTS="$(JAVASCRIPT_TEST_COMPONENTS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] JSLINT="$(JSLINT)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] JSLINT_ARGS="$(JSLINT_ARGS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] NPM="$(NPM)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] NPM_ARGS="$(NPM_ARGS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] NPM_DIR="$(NPM_DIR)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] NODE="$(NODE)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] NODE_ARGS="$(NODE_ARGS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] SED_MLC_REGEX="$(SED_MLC_REGEX)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] SED_SLC_REGEX="$(SED_SLC_REGEX)"
+
+$(JAVASCRIPT_TEST) : $(JAVASCRIPT_TEST_COMPONENTS) $(patsubst %.js,%.js+test,$(JAVASCRIPT_TEST_COMPONENTS))
+	@echo $(NOW) [SYS] [$(SELF)] [$@]
+
+endif

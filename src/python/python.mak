@@ -9,7 +9,7 @@ BUILD_DEPENDENCIES=\
 BUILD_TARGETS=\
 	component.py
 
-TEST_TARGETS=\
+PYTHON_TEST_COMPONENTS=\
 	test.py
 
 component.py : $(SOURCE_DIR)/main/python/component.py

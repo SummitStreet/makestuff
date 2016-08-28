@@ -23,8 +23,26 @@
 
 #** makestuff/src/c/c_vars.mak
 
+ifndef __C_VARS
+
+__C_VARS=__c_vars
 include $(MAKESTUFF)/global_vars.mak
 
+# Additional targets.
+
+C_CLEAN=C_clean
+C_ENVIRONMENT=c_environment
+C_TEST=c_test
+
+# JavaScript-specific variables.
+
+CLEAN_TARGETS+=$(C_CLEAN)
+ENVIRONMENT_TARGETS+=$(C_ENVIRONMENT)
+TEST_TARGETS+=$(C_TEST)
+
+C_TEST_COMPONENTS=
 CC=gcc
 CC_COMPILE_OPTS=-std=c99
 CC_LINK_OPTS=
+
+endif

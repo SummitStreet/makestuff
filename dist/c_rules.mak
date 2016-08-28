@@ -23,24 +23,33 @@
 
 #** makestuff/src/c/c_rules.mak
 
+ifndef __C_RULES
+
+__C_RULES=__c_rules
 include $(MAKESTUFF)/global_rules.mak
 
-### Build process-specific goals.
+.PHONY : $(C_CLEAN) $(C_ENVIRONMENT) $(C_TEST)
 
-$(MODULE_PARAMETERS) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] CC="$(CC)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] CC_COMPILE_OPTS="$(CC_COMPILE_OPTS)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] CC_LINK_OPTS="$(CC_LINK_OPTS)"
-
-$(TEMP_DIR)/%.o : %.c
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Compile $^
-	@mkdir -p $(TEMP_DIR)
-	@$(CC) $(CC_COMPILE_OPTS) -c $< -o $@
-
-$(BUILD_TARGETS) : $(addprefix $(TEMP_DIR)/, $(OBJECT_FILES))
+%.bin : $(addprefix $(TEMP_DIR)/, $(OBJECT_FILES))
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Link $^
 	@mkdir -p $(DIST_DIR)
 	@$(CC) $(CC_LINK_OPTS) $^ -o $@
 
-$(RUN_TESTS) : $(TEST_TARGETS)
+%.o :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module: $^
+	@mkdir -p $(TEMP_DIR)
+	@$(CC) $(CC_COMPILE_OPTS) -c $< -o $@
+
+$(C_CLEAN) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
+
+$(C_ENVIRONMENT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] C_TEST_COMPONENTS="$(C_TEST_COMPONENTS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] CC="$(CC)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] CC_COMPILE_OPTS="$(CC_COMPILE_OPTS)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] CC_LINK_OPTS="$(CC_LINK_OPTS)"
+
+$(C_TEST) : $(C_TEST_COMPONENTS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] $^
+
+endif

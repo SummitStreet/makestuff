@@ -23,47 +23,13 @@
 
 #** makestuff/src/global/global_vars.mak
 
+ifndef __GLOBAL_VARS
+
+__GLOBAL_VARS=__global_vars
+
 SHELL=/bin/sh
 
-# Make standard targets.
-
-# ALL
-#	Compile the entire program.
-# CHECK
-#	Perform self-tests (if any).
-# CLEAN
-#	Delete all files from the current directory that are normally created by
-#	builidng the program.
-# DIST
-#	Create a distribution tar file for this program.
-# DISTCLEAN
-#	Delete all files from the current directory that are created by
-#	configuring or building the program.
-# DVI
-#	Generate DVI files for all Texinfo documentation.
-# INFO
-#	Generate any info files needed.
-# INSTALL
-#	Compile the program and copy the executables, libraries, and so on to
-#	the file names where they should reside for actual use.
-# INSTALLCHECK
-#	Perofmr installation tests (if any).
-# INSTALLDIRS
-#	It's useful to add a target named 'installdirs' to create the
-#	directorieswhere files are installed, and their parent directories.
-# INSTALL_STRIP
-#	Like install, but strip the executable files while installing them.
-# MAINTAINER_CLEAN
-#	Delete almost everything from the current directory that can be
-#	reconstructed with this Makefile.
-# MOSTLYCLEAN
-#	Like 'clean', but may refrain from deleting a few files that people
-#	normally don't want to recompile.
-# UNINSTALL
-#	Delete all the installed files--the copies that the 'install' target
-#	creates.
-# TAGS
-#	Update a tags table for this program.
+# Make standard targets, see https://www.gnu.org/software/make/manual/html_node/Standard-Targets.html
 
 ALL=all
 CHECK=check
@@ -71,33 +37,46 @@ CLEAN=clean
 DIST=dist
 DISTCLEAN=distclean
 DVI=dvi
+HTML=html
 INFO=info
 INSTALL=install
+INSTALL_DVI=install-dvi
+INSTALL_HTML=install-html
+INSTALL_PDF=install-pdf
+INSTALL_PS=install-ps
+INSTALL_STRIP=install-strip
 INSTALLCHECK=installcheck
 INSTALLDIRS=installdirs
-INSTALL_STRIP=install-strip
 MAINTAINER_CLEAN=maintainer-clean
 MOSTLYCLEAN=mostlyclean
+PDF=pdf
+PS=ps
 UNINSTALL=uninstall
 TAGS=TAGS
 
 # Additional targets.
 
-MODULE_CLEAN=module_clean
-COMPONENT_CLEAN=component_clean
-DEPENDENCIES=dependencies
-DEV_DEPENDENCIES=dev_dependencies
 BUILD=build
 BUILD_PREAMBLE=build_preamble
 BUILD_EPILOGUE=build_epilogue
+DEPENDENCIES=dependencies
+ENVIRONMENT=environment
+GLOBAL_CLEAN=global_clean
+GLOBAL_ENVIRONMENT=global_environment
+GLOBAL_TEST=global_test
+INIT=init
 TEST=test
 TEST_PREAMBLE=test_preamble
 TEST_EPILOGUE=test_epilogue
-RUN_TESTS=run_tests
-ENVIRONMENT_INFO=environment_info
-GLOBAL_PARAMETERS=global_parameters
-MODULE_PARAMETERS=module_parameters
-COMPONENT_PARAMETERS=component_parameters
+
+# Global variables.
+
+CLEAN_TARGETS+=$(GLOBAL_CLEAN)
+ENVIRONMENT_TARGETS+=$(GLOBAL_ENVIRONMENT)
+TEST_TARGETS+=$(GLOBAL_TEST)
+
+BUILD_DEPENDENCIES=
+BUILD_TARGETS=
 
 SELF=$(strip $(firstword $(MAKEFILE_LIST)))
 DATE_TIME=$(shell if [ "`uname`" == "Darwin" ]; then echo "+%Y-%m-%d %H:%M:%S" ; else echo "+%F %T" ; fi)
@@ -109,7 +88,9 @@ GIT_CLONE="$(GIT) clone --branch {ver} $(GIT_PROTOCOL)://{repo}.git {dir} >/dev/
 PYTHON=python
 SED=sed
 SED_ARGS=$(if grep -c 'Darwin',-i "",-i)
+REPO_DIR=.makestuff
 DIST_DIR=dist
 SOURCE_DIR=src
 TEMP_DIR=temp
-REPO_DIR=.makestuff
+
+endif
