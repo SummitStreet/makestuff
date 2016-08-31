@@ -232,7 +232,6 @@ class CommandLineApp(object):
 # Example (remove all repos):
 # 	makestuff.py removeall
 
-
 REPO_CLONE = "git clone -q --branch {ver} https://{repo}.git {dir}"
 REPO_DIR = ".makestuff"
 CONFIG_FILE = "makestuff.json"
@@ -346,3 +345,4 @@ if __name__ == '__main__':
 		("command", True, str, "+", None, None, u"valid commands: install, remove, removall, path"),
 	]
 	sys.exit(MakeStuff(DESCRIPTION, COMMAND_LINE_ARGS, MakeStuff).run())
+

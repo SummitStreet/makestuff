@@ -13,7 +13,7 @@ are included in the output file only one time.
 
 #** makestuff/src/main/python/makestuff_merge.py
 
-#pylint: disable=bad-continuation, mixed-indentation
+#pylint: disable=bad-continuation, mixed-indentation, too-few-public-methods
 
 import codecs
 import inspect
@@ -21,132 +21,157 @@ import os
 import re
 import sys
 
-class PythonImport(object):
+class Group(object):
+	"""
+	Group multiple, like sequences into a single location, the number of lines
+	does not change.
+	"""
+
+	@staticmethod
+	def parse(source_code, regular_expressions, sort_matching_lines=True):
+		"""
+		Parses the source code, group multiple, like sequences into a single
+		location.
+		"""
+		matching_lines = []
+		start_pos = len(source_code)
+		for regex in regular_expressions:
+			matching_lines += re.findall(regex, source_code)
+			match = re.search(regex, source_code)
+			if match and match.start() < start_pos:
+				start_pos = match.start()
+
+		matching_lines = list(set(matching_lines))
+		if sort_matching_lines:
+			matching_lines = sorted(matching_lines)
+		source_code = Remove.parse(source_code, regular_expressions)
+		return source_code[:start_pos] + "\n".join(matching_lines) + source_code[start_pos:]
+
+class Merge(object):
+	"""
+	Merge multiple, like sequences into a line and location.
+	"""
+
+	@staticmethod
+	def parse(source_code, delimiter, regular_expression, sort_items=True):
+		"""
+		Parses the source code, consolidates multiple, like sequences.
+		"""
+		result = ""
+		constant = None
+		items = []
+		first_match_pos = 0
+		for line in source_code.splitlines():
+			matching_items = re.findall(regular_expression, line)
+			if matching_items and matching_items[0] and matching_items[0][0]:
+				if not first_match_pos:
+					first_match_pos = len(result)
+					constant = matching_items[0][0]
+				items += [i for j in matching_items[1:] for i in j if i]
+			else:
+				result += line + "\n"
+
+		temp_set = set()
+		items = [i for i in items if i and not (i in temp_set or temp_set.add(i))]
+		if sort_items:
+			items = sorted(items)
+ 		consolidated_text = "" if not constant else constant + delimiter.join(items) + "\n"
+		return result[:first_match_pos] + consolidated_text+ result[first_match_pos:]
+
+class Remove(object):
+	"""
+	Removes unneeded sequences (e.g.: comments) from the source code.
+	"""
+
+	@staticmethod
+	def parse(source_code, regular_expressions):
+		"""
+		Parses the source code, removes matching strings.
+		"""
+		for regex in regular_expressions:
+			source_code = re.sub(regex, "", source_code)
+		return source_code
+
+class RemoveExtraBlankLines(object):
+	"""
+	Removes extra blank lines from the source code.
+	"""
+
+	@staticmethod
+	def parse(source_code):
+		"""
+		Parses the source code, removes extra blank lines.
+		"""
+		retained_lines = []
+		for current_line in source_code.splitlines():
+			current_line = current_line.rstrip()
+			if current_line or (retained_lines and retained_lines[-1]):
+				retained_lines.append(current_line)
+		return "\n".join(retained_lines)
+
+class Singleton(object):
+	"""
+	Removes all but one occurrence of a string from the source code.
+	"""
+
+	@staticmethod
+	def parse(source_code, regular_expressions):
+		"""
+		Parses the string, removes all but one occurrence of the strings matching
+		the regular expressions provided via the constructor.
+		"""
+		for regex in regular_expressions:
+			strings = set()
+			strings = [s for s in re.split(regex, source_code) if not (s in strings or strings.add(s))]
+			source_code = "".join(strings)
+		return source_code
+
+class JavaScript(object):
 	"""
 	TODO
 	"""
-	regex = [r"import ", r"from.*import"]
-	imports = []
+	extension = ["js"]
 
 	@classmethod
-	def inject(cls, script_lines, source_line):
+	def merge(cls, source_code):
 		"""
 		TODO
 		"""
-		# Add all import statements when the 1st import line is encountered.
-		if any([re.match(r, source_line) for r in cls.regex]):
-			if cls.imports:
-				script_lines += cls.imports
-				cls.imports = []
-			return True
-		return False
-
-	@classmethod
-	def parse(cls, source_lines):
-		"""
-		TODO
-		"""
-		cls.imports = sorted(set([i for i in source_lines if any([re.match(r, i) for r in cls.regex])]))
-
-class PythonPylintDirective(object):
-	"""
-	TODO
-	"""
-
-	regex = [r"#pylint: disable=", r"#pylint: enable="]
-	directives = []
-
-	@classmethod
-	def inject(cls, script_lines, source_line):
-		"""
-		TODO
-		"""
-		# Add all pylint directives when the 1st pylint directive is encountered.
-		if any([re.match(r, source_line) for r in cls.regex]):
-			if cls.directives:
-				script_lines += cls.directives
-				cls.directives = []
-			return True
-		return False
-
-	@classmethod
-	def parse(cls, source_lines):
-		"""
-		TODO
-		"""
-		lines = [i for i in source_lines if any([re.match(r, i) for r in cls.regex])]
-		lines = [[i[len(r):] for i in lines if i.startswith(r) and i[len(r):]] for r in cls.regex]
-		lines = [", ".join(sorted(set([j.strip() for j in (",".join(i)).split(",")]))) for i in lines]
-		cls.directives = [cls.regex[i] + lines[i] for i in range(len(cls.regex)) if lines[i]]
-
-class PythonSingleton(object):
-	"""
-	TODO
-	"""
-	regex = [
-		r"#!/usr/bin/env python",
-		r"# -\*- coding: utf-8 -\*-"
-	]
-	singleton_lines = set()
-
-	@classmethod
-	def inject(cls, script_lines, source_line):
-		"""
-		TODO
-		"""
-		if any([re.match(r, source_line) for r in cls.regex]):
-			if not source_line in cls.singleton_lines:
-				script_lines += [source_line]
-			cls.singleton_lines.add(source_line)
-			return True
-		return False
-
-	@classmethod
-	def parse(cls, source_lines):
-		"""
-		TODO
-		"""
+		source_code = Remove.parse(source_code, [
+			r"//.*?\n",
+			r"/\*(?!\s*eslint).*\*/",
+			re.compile(r"/\*[^*]*^.*?\*/", re.DOTALL | re.MULTILINE)
+		])
+		source_code = Singleton.parse(source_code, [
+			r"(\"use strict\";)"
+		])
+		source_code = RemoveExtraBlankLines.parse(source_code)
+		return source_code
 
 class Python(object):
 	"""
 	TODO
 	"""
 	extension = ["py"]
-	python_import = PythonImport()
-	python_pylint_directive = PythonPylintDirective()
-	python_singleton = PythonSingleton()
 
 	@classmethod
-	def assemble(cls, source_lines):
+	def merge(cls, source_code):
 		"""
 		TODO
 		"""
-		script_lines = []
-		for i in source_lines:
-
-			# Remove all but one occurrence of singleton lines.
-			if cls.python_singleton.inject(script_lines, i):
-				continue
-
-			# Combine pylint directives.
-			if cls.python_pylint_directive.inject(script_lines, i):
-				continue
-
-			# Add all import statements when the first import line is encountered.
-			if cls.python_import.inject(script_lines, i):
-				continue
-
-			script_lines += [i]
-		return script_lines
-
-	@classmethod
-	def merge(cls, source_lines):
-		"""
-		TODO
-		"""
-		cls.python_import.parse(source_lines)
-		cls.python_pylint_directive.parse(source_lines)
-		return cls.assemble(source_lines)
+		source_code = Singleton.parse(source_code, [
+			r"^(#!/usr/bin/env python)"
+			r"^(# -\*- coding: utf-8 -\*-)"
+		])
+		source_code = Merge.parse(source_code, ", ", r"^(#pylint: enable=)|([\w-]+)(?:,|$)")
+		source_code = Merge.parse(source_code, ", ", r"^(#pylint: disable=)|([\w-]+)(?:,|$)")
+		source_code = Group.parse(source_code, [
+			re.compile(r"^from .* import .*", re.MULTILINE),
+			re.compile(r"^import .*", re.MULTILINE)
+		])
+		#r"(?!from .*)import .*"
+		source_code = RemoveExtraBlankLines.parse(source_code)
+		return source_code
 
 class MakestuffMerge(object):
 	"""
@@ -154,9 +179,8 @@ class MakestuffMerge(object):
 	"""
 
 	source_types = set()
-	source_lines = []
+	source_code = u""
 	source_file_names = []
-	target_lines = []
 
 	@classmethod
 	def load_source_files(cls):
@@ -167,7 +191,7 @@ class MakestuffMerge(object):
 			_, extension = os.path.splitext(file_name)
 			cls.source_types.add(extension[1:])
 			with codecs.open(file_name, encoding="utf-8") as input_file:
-				cls.source_lines += input_file.read().splitlines()
+				cls.source_code += input_file.read() + "\n"
 
 	@classmethod
 	def merge(cls):
@@ -179,8 +203,7 @@ class MakestuffMerge(object):
 			if hasattr(target, key):
 				value = getattr(target, key)
 				if cls.source_types < set(value) or cls.source_types == set(value):
-					cls.target_lines = target.merge(MakestuffMerge.source_lines)
-					return "\n".join(cls.target_lines)
+					return target.merge(MakestuffMerge.source_code)
 		err_msg = "Unsupported file extension: ext='{0}'.".format(", ".join(cls.source_types))
 		raise ValueError(err_msg)
 
