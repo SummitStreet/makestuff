@@ -48,7 +48,5 @@ NPM_ARGS=
 NPM_DIR=node_modules
 NODE=node
 NODE_ARGS=
-SED_MLC_REGEX="/\/\*\*/,/\*\//d"
-SED_SLC_REGEX="/\/\//d"
 
 endif

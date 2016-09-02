@@ -34,8 +34,7 @@ include $(MAKESTUFF)/global_rules.mak
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
 	@mkdir -p $(DIST_DIR)
 	@cat $^ > $(DIST_DIR)/$@
-	@sed $(SED_ARGS) $(SED_SLC_REGEX) $(DIST_DIR)/$@
-	@sed $(SED_ARGS) $(SED_MLC_REGEX) $(DIST_DIR)/$@
+	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF_MERGE_PY) $^ > $(DIST_DIR)/$@
 	@$(JSLINT) $(JSLINT_ARGS) $(DIST_DIR)/$@
 
 %.js+test :
@@ -65,8 +64,6 @@ $(JAVASCRIPT_ENVIRONMENT) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] NPM_DIR="$(NPM_DIR)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] NODE="$(NODE)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] NODE_ARGS="$(NODE_ARGS)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] SED_MLC_REGEX="$(SED_MLC_REGEX)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] SED_SLC_REGEX="$(SED_SLC_REGEX)"
 
 $(JAVASCRIPT_TEST) : $(JAVASCRIPT_TEST_COMPONENTS) $(patsubst %.js,%.js+test,$(JAVASCRIPT_TEST_COMPONENTS))
 	@echo $(NOW) [SYS] [$(SELF)] [$@]
