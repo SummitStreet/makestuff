@@ -217,5 +217,7 @@ class MakestuffMerge(object):
 		return cls.merge()
 
 if __name__ == "__main__":
-    SCRIPT_LINES = MakestuffMerge.run(sys.argv[1:])
-    print SCRIPT_LINES
+	sys.stdin = codecs.getreader("utf-8")(sys.stdin)
+	sys.stdout = codecs.getwriter("utf-8")(sys.stdout)
+	sys.stderr = codecs.getwriter("utf-8")(sys.stderr)
+	print MakestuffMerge.run(sys.argv[1:])

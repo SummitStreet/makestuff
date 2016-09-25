@@ -42,7 +42,7 @@ TEST_TARGETS+=$(PYTHON_TEST)
 
 MAKESTUFF_MERGE_PY=$(MAKESTUFF)/makestuff_merge.py
 PYLINT=pylint
-PYLINT_ARGS=-r n -E --persistent=n
+PYLINT_ARGS=-r n --persistent=n --disable=I
 PYTHON=python
 PYTHON_ARGS=
 PYTHON_PATH=

@@ -10,9 +10,13 @@ python as a program passed in via the -c option.
 
 #pylint: disable=
 
+import codecs
 import re
 import sys
 
+sys.stdin = codecs.getreader("utf-8")(sys.stdin)
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout)
+sys.stderr = codecs.getwriter("utf-8")(sys.stderr)
 SRC = re.sub(re.compile("#.*?\n|\r|\r\n"), "", sys.stdin.read())
 SRC = re.sub(re.compile("\"{3}.*?\"{3}", re.DOTALL), "", SRC)
 LINES = [i for i in SRC.splitlines(False) if i]

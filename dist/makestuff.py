@@ -334,6 +334,9 @@ class MakeStuff(CommandLineApp):
 			return -1
 
 if __name__ == '__main__':
+	sys.stdin = codecs.getreader("utf-8")(sys.stdin)
+	sys.stdout = codecs.getwriter("utf-8")(sys.stdout)
+	sys.stderr = codecs.getwriter("utf-8")(sys.stderr)
 	DESCRIPTION = "CLI for the makestuff module."
 	# Command-line args format: (name, required, type, nargs, default, action, help)
 	COMMAND_LINE_ARGS = [
