@@ -32,7 +32,7 @@ REPO_DIR = ".makestuff"
 CONFIG_FILE = "makestuff.json"
 TEMP_DIR = ".tmp"
 
-class MakeStuff(CommandLineApp):
+class MakeStuff(Service):
 	"""
 	Implements the CLI of the makestuff module.
 	"""

@@ -126,7 +126,7 @@ python_vars.mak : \
 	$(SOURCE_DIR)/python/python_vars.mak
 
 makestuff.py : \
-	$(LAUNCHPAD)/app.py \
+	$(LAUNCHPAD)/service.py \
 	$(SOURCE_DIR)/main/python/makestuff.py
 
 makestuff_merge.py : \

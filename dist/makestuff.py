@@ -42,7 +42,7 @@ import shutil
 import sys
 import traceback
 
-class CommandLineApp(object):
+class Service(object):
 	"""
 	This abstract class implements the shell of an command-line app.
 	"""
@@ -79,7 +79,7 @@ class CommandLineApp(object):
 		"""
 		TODO
 		"""
-		elapsed_date_time = datetime.datetime.now() - CommandLineApp.start_date_time
+		elapsed_date_time = datetime.datetime.now() - Service.start_date_time
 		hours, minutes = divmod(elapsed_date_time.seconds, 3600)
 		minutes, seconds = divmod(minutes, 60)
 		return (elapsed_date_time.days * 24 + hours, minutes, seconds)
@@ -132,15 +132,16 @@ class CommandLineApp(object):
 		"""
 		cli = self.__command_line_args[:]
 		cli.extend(command_line_args)
-		self.__config(description, cli, args)
+		self.__config(description, cli, args if args else [self.__class__])
 
 	def __config(self, description, command_line_args, configurable_types):
 		"""
 		Initializes the ArgumentParser and injects command-line arguments as
 		static variables into the types defined in the module.
 		"""
-		writer = codecs.getwriter("utf8")
-		sys.stdout = writer(sys.stdout)
+		sys.stdin = codecs.getreader("utf-8")(sys.stdin)
+		sys.stdout = codecs.getwriter("utf-8")(sys.stdout)
+		sys.stderr = codecs.getwriter("utf-8")(sys.stderr)
 
 		# Create and initialize an ArgumentParser.
 		parser = argparse.ArgumentParser(description=description)
@@ -150,6 +151,10 @@ class CommandLineApp(object):
 			# Positional arguments do not use required.
 			if i[0][:2] != "--":
 				del params["required"]
+			# Boolean arguments do not use type or nargs.
+			if i[2] == bool:
+				params.pop("type", None)
+				params.pop("nargs", None)
 			parser.add_argument(i[0], **params)
 
 		# Inject argument values into all types within the module with matching
@@ -182,7 +187,7 @@ class CommandLineApp(object):
 		Runs the app.
 		"""
 		try:
-			CommandLineApp.start_date_time = datetime.datetime.now()
+			Service.start_date_time = datetime.datetime.now()
 			self.log_system("Running {0}".format(type(self).__name__))
 			self.initialize()
 			self.start()
@@ -194,7 +199,7 @@ class CommandLineApp(object):
 			hours, minutes, seconds = self._get_elapsed_time()
 			elapsed_time = "{0}h:{1}m:{2}s".format(hours, minutes, seconds)
 			self.log_critical("Failed", elapsed_time=elapsed_time)
-			traceback.print_exc(file=sys.stdout)
+			traceback.print_exc(file=sys.stderr)
 			return -1
 		return 0
 
@@ -237,7 +242,7 @@ REPO_DIR = ".makestuff"
 CONFIG_FILE = "makestuff.json"
 TEMP_DIR = ".tmp"
 
-class MakeStuff(CommandLineApp):
+class MakeStuff(Service):
 	"""
 	Implements the CLI of the makestuff module.
 	"""
