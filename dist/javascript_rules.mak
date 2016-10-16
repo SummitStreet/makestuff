@@ -41,7 +41,6 @@ include $(MAKESTUFF)/global_rules.mak
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
 	@mkdir -p $(dir $@)
 	@cat $^ > $@
-	@$(JSLINT) $(JSLINT_ARGS) $@
 
 %.js+test :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Test Module
