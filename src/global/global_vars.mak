@@ -101,8 +101,8 @@ DIST_DIR=dist
 SRC_DIR=src
 TEMP_DIR=temp
 MAKESTUFF_JSON=makestuff.json
-COMPONENT_GROUP=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"group"[ ]*:[ ]*"?([^\n^"^,]*)"?,?/\1/p')
-COMPONENT_NAME=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"name"[ ]*:[ ]*"?([^\n^"^,]*)"?,?/\1/p')
-COMPONENT_VERSION=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"version"[ ]*:[ ]*"?([^\n^"^,]*)"?,?/\1/p')
+COMPONENT_GROUP=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"group"[ ]*:[ ]*"?([^"^,^]*)"?,?/\1/p')
+COMPONENT_NAME=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"name"[ ]*:[ ]*"?([^"^,^]*)"?,?/\1/p')
+COMPONENT_VERSION=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"version"[ ]*:[ ]*"?([^"^,^]*)"?,?/\1/p')
 
 endif
