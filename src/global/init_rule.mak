@@ -12,9 +12,9 @@ all :
 ### Initialize/bootstrap makestuff environment
 ### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
 
-init :
+makestuff_init :
 	@rm -fr $(MAKESTUFF)
 	@python -c 'makestuff_init.py' $(REPO_DIR) $(MAKESTUFF_REPO) >/dev/null 2>/dev/null
 	@rm -fr $(REPO_DIR)/.tmp ; mv $(MAKESTUFF)/dist $(REPO_DIR)/.tmp ; rm -fr $(MAKESTUFF) ; mv $(REPO_DIR)/.tmp $(MAKESTUFF)
 
-.PHONY : all init
+.PHONY : all makestuff_init
