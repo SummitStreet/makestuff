@@ -159,7 +159,7 @@ $(DIST_DIR)/python_vars.mak : \
 	$(SRC_DIR)/python/python_vars.mak
 
 $(DIST_DIR)/makestuff.py : \
-	$(LAUNCHPAD)/service.py \
+	$(LAUNCHPAD)/python/service.py \
 	$(SRC_DIR)/main/python/makestuff.py
 
 $(DIST_DIR)/makestuff_merge.py : \

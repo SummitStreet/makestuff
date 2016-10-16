@@ -37,6 +37,12 @@ include $(MAKESTUFF)/global_rules.mak
 	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF_MERGE_PY) $^ > $@
 	@$(JSLINT) $(JSLINT_ARGS) $@
 
+%.json :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
+	@mkdir -p $(dir $@)
+	@cat $^ > $@
+	@$(JSLINT) $(JSLINT_ARGS) $@
+
 %.js+test :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Test Module
 	@$(NODE) $(NODE_ARGS) $(*D)/$(*F).js
