@@ -39,7 +39,7 @@ include $(MAKESTUFF)/global_rules.mak
 
 %.js+test :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Test Module
-	@$(NODE) $(NODE_ARGS) $(DIST_DIR)/$(*D)/$(*F).js
+	@$(NODE) $(NODE_ARGS) $(*D)/$(*F).js
 
 %.npm :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install NPM Dependencies

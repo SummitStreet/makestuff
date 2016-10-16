@@ -38,6 +38,10 @@ $(ALL) :
 ### Initialize/bootstrap makestuff environment
 ### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
 
+__makestuff_clean :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Removing Temporary Files
+	@rm -fr $(TEMP_DIR)
+
 $(COMPONENT_ENVIRONMENT) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] MAKESTUFF_MERGE_PY="$(MAKESTUFF_MERGE_PY)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] LAUNCHPAD_REPO="$(LAUNCHPAD_REPO)"
@@ -72,11 +76,7 @@ BUILD_TARGETS=\
 	$(DIST_DIR)/xml.mak \
 	$(DIST_DIR)/xml_rules.mak \
 	$(DIST_DIR)/xml_vars.mak \
-	$(COMPONENT_CLEAN)
-
-$(COMPONENT_CLEAN) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Removing Temporary Files
-	@rm -fr $(TEMP_DIR)
+	__makestuff_clean
 
 %.json :
 	@echo $(NOW) [SYS] [$(SELF)] [$@]
