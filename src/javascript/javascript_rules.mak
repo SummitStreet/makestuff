@@ -28,14 +28,14 @@ ifndef __JAVASCRIPT_RULES
 __JAVASCRIPT_RULES=__javascript_rules
 include $(MAKESTUFF)/global_rules.mak
 
-.PHONY : $(JAVASCRIPT_CLEAN) $(JAVASCRIPT_ENVIRONMENT) $(JAVASCRIPT_TEST)
+.PHONY : $(JAVASCRIPT_CLEAN) $(JAVASCRIPT_ENVIRONMENT) $(JAVASCRIPT_INIT) $(JAVASCRIPT_TEST)
 
 %.js :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
-	@mkdir -p $(DIST_DIR)
-	@cat $^ > $(DIST_DIR)/$@
-	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF_MERGE_PY) $^ > $(DIST_DIR)/$@
-	@$(JSLINT) $(JSLINT_ARGS) $(DIST_DIR)/$@
+	@mkdir -p $(dir $@)
+	@cat $^ > $@
+	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF_MERGE_PY) $^ > $@
+	@$(JSLINT) $(JSLINT_ARGS) $@
 
 %.js+test :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Test Module
@@ -64,6 +64,9 @@ $(JAVASCRIPT_ENVIRONMENT) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] NPM_DIR="$(NPM_DIR)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] NODE="$(NODE)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] NODE_ARGS="$(NODE_ARGS)"
+
+$(JAVASCRIPT_INIT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@]
 
 $(JAVASCRIPT_TEST) : $(JAVASCRIPT_TEST_COMPONENTS) $(patsubst %.js,%.js+test,$(JAVASCRIPT_TEST_COMPONENTS))
 	@echo $(NOW) [SYS] [$(SELF)] [$@]

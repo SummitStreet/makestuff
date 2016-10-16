@@ -21,34 +21,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#** makestuff/src/global/init_rule.mak
+#** makestuff/src/xml/xml.mak
 
-REPO_DIR=.makestuff
-MAKESTUFF_REPO=github.com/SummitStreet/makestuff@master.git
-MAKESTUFF=$(shell python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; print os.sep.join([sys.argv[1], R, V[1:]])' $(REPO_DIR) $(MAKESTUFF_REPO))
+ifndef __XML_RULES
 
-# The default target is 'all'.
+__XML_RULES=__xml_rules
+include $(MAKESTUFF)/global_rules.mak
 
-all :
+.PHONY : $(XML_CLEAN) $(XML_ENVIRONMENT) $(XML_TEST)
 
-### Initialize/bootstrap makestuff environment
-### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
+%.xml :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
+	@mkdir -p $(dir $@)
+	@cat $^ > $@
+	@$(XML_VALIDATOR) $@
 
-init :
-	@rm -fr $(MAKESTUFF)
-	@python -c 'import os, re, sys ; C = "git clone --branch {1} https://{0}.git {2}" ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(C.format(R, V[1:], D))' $(REPO_DIR) $(MAKESTUFF_REPO) >/dev/null 2>/dev/null
-	@rm -fr $(REPO_DIR)/.tmp ; mv $(MAKESTUFF)/dist $(REPO_DIR)/.tmp ; rm -fr $(MAKESTUFF) ; mv $(REPO_DIR)/.tmp $(MAKESTUFF)
+$(XML_CLEAN) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
 
-.PHONY : all init
+$(XML_INIT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@]
 
-#** makestuff/src/generic/generic.mak
+$(XML_ENVIRONMENT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] XML_TEST_COMPONENTS="$(XML_TEST_COMPONENTS)"
 
--include $(MAKESTUFF)/generic_vars.mak
+$(XML_TEST) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@]
 
-BUILD_DEPENDENCIES=\
-	github.com/account/repo@version.git
-
-BUILD_TARGETS=\
-	component.ext
-
--include $(MAKESTUFF)/generic_rules.mak
+endif

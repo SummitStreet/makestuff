@@ -28,13 +28,13 @@ ifndef __PYTHON_RULES
 __PYTHON_RULES=__python_rules
 include $(MAKESTUFF)/global_rules.mak
 
-.PHONY : $(PYTHON_CLEAN) $(PYTHON_ENVIRONMENT) $(PYTHON_TEST)
+.PHONY : $(PYTHON_CLEAN) $(PYTHON_ENVIRONMENT) $(PYTHON_INIT) $(PYTHON_TEST)
 
 %.py :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
-	@mkdir -p $(DIST_DIR)
-	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF_MERGE_PY) $^ > $(DIST_DIR)/$@
-	@$(PYLINT) $(PYLINT_ARGS) $(DIST_DIR)/$@ 2>/dev/null
+	@mkdir -p $(dir $@)
+	@$(PYTHON) $(PYTHON_ARGS) $(MAKESTUFF_MERGE_PY) $^ > $@
+	@$(PYLINT) $(PYLINT_ARGS) $@ 2>/dev/null
 
 %.py+test :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Test Module
@@ -46,12 +46,15 @@ $(PYTHON_CLEAN) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
 
 $(PYTHON_ENVIRONMENT) :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT="$(PYLINT)"
-	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT_ARGS="$(PYLINT_ARGS)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON="$(PYTHON)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_ARGS="$(PYTHON_ARGS)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_PATH="$(PYTHON_PATH)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT="$(PYLINT)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] PYLINT_ARGS="$(PYLINT_ARGS)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] PYTHON_TEST_TARGETS="$(PYTHON_TEST_TARGETS)"
+
+$(PYTHON_INIT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@]
 
 $(PYTHON_TEST) : $(PYTHON_TEST_COMPONENTS) $(patsubst %.py,%.py+test,$(PYTHON_TEST_COMPONENTS))
 	@echo $(NOW) [SYS] [$(SELF)] [$@]

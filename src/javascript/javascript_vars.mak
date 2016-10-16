@@ -32,12 +32,14 @@ include $(MAKESTUFF)/global_vars.mak
 
 JAVASCRIPT_CLEAN=javascript_clean
 JAVASCRIPT_ENVIRONMENT=javascript_environment
+JAVASCRIPT_INIT=javascript_init
 JAVASCRIPT_TEST=javascript_test
 
-# JavaScript-specific variables.
+# Global variables.
 
 CLEAN_TARGETS+=$(JAVASCRIPT_CLEAN)
 ENVIRONMENT_TARGETS+=$(JAVASCRIPT_ENVIRONMENT)
+INIT_TARGETS+=$(JAVASCRIPT_INIT)
 TEST_TARGETS+=$(JAVASCRIPT_TEST)
 
 MAKESTUFF_MERGE_PY=$(MAKESTUFF)/makestuff_merge.py

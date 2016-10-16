@@ -126,6 +126,20 @@ class Singleton(object):
 			source_code = "".join(strings)
 		return source_code
 
+class Java(object):
+	"""
+	TODO
+	"""
+	extension = ["java"]
+
+	@classmethod
+	def merge(cls, source_code):
+		"""
+		TODO
+		"""
+		source_code = RemoveExtraBlankLines.parse(source_code)
+		return source_code
+
 class JavaScript(object):
 	"""
 	TODO

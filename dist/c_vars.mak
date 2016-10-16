@@ -32,12 +32,14 @@ include $(MAKESTUFF)/global_vars.mak
 
 C_CLEAN=C_clean
 C_ENVIRONMENT=c_environment
+C_INIT=c_init
 C_TEST=c_test
 
-# JavaScript-specific variables.
+# Global variables.
 
 CLEAN_TARGETS+=$(C_CLEAN)
 ENVIRONMENT_TARGETS+=$(C_ENVIRONMENT)
+INIT_TARGETS+=$(C_INIT)
 TEST_TARGETS+=$(C_TEST)
 
 C_TEST_COMPONENTS=

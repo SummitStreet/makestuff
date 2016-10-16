@@ -35,6 +35,7 @@ all :
 ### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
 
 init :
+	@rm -fr $(MAKESTUFF)
 	@python -c 'import os, re, sys ; C = "git clone --branch {1} https://{0}.git {2}" ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(C.format(R, V[1:], D))' $(REPO_DIR) $(MAKESTUFF_REPO) >/dev/null 2>/dev/null
 	@rm -fr $(REPO_DIR)/.tmp ; mv $(MAKESTUFF)/dist $(REPO_DIR)/.tmp ; rm -fr $(MAKESTUFF) ; mv $(REPO_DIR)/.tmp $(MAKESTUFF)
 
@@ -44,8 +45,8 @@ init :
 
 -include $(MAKESTUFF)/c_vars.mak
 
-vpath %.h $(SOURCE_DIR)/main/c
-vpath %.c $(SOURCE_DIR)/main/c
+vpath %.h $(SRC_DIR)/main/c
+vpath %.c $(SRC_DIR)/main/c
 
 BUILD_DEPENDENCIES=\
 	github.com/account/repo.git

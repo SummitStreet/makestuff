@@ -28,11 +28,11 @@ ifndef __C_RULES
 __C_RULES=__c_rules
 include $(MAKESTUFF)/global_rules.mak
 
-.PHONY : $(C_CLEAN) $(C_ENVIRONMENT) $(C_TEST)
+.PHONY : $(C_CLEAN) $(C_ENVIRONMENT) $(C_INIT) $(C_TEST)
 
 %.bin : $(addprefix $(TEMP_DIR)/, $(OBJECT_FILES))
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Link $^
-	@mkdir -p $(DIST_DIR)
+	@mkdir -p $(dir $@)
 	@$(CC) $(CC_LINK_OPTS) $^ -o $@
 
 %.o :
@@ -48,6 +48,9 @@ $(C_ENVIRONMENT) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] CC="$(CC)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] CC_COMPILE_OPTS="$(CC_COMPILE_OPTS)"
 	@echo $(NOW) [SYS] [$(SELF)] [$@] CC_LINK_OPTS="$(CC_LINK_OPTS)"
+
+$(C_INIT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@]
 
 $(C_TEST) : $(C_TEST_COMPONENTS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] $^

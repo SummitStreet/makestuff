@@ -12,8 +12,8 @@ BUILD_TARGETS=\
 JAVASCRIPT_TEST_COMPONENTS=\
 	test.js
 
-component.js : $(SOURCE_DIR)/main/javascript/component.js
+component.js : $(SRC_DIR)/main/javascript/component.js
 
-test.js : $(SOURCE_DIR)/test/javascript/test.js
+test.js : $(SRC_DIR)/test/javascript/test.js
 
 -include $(MAKESTUFF)/javascript_rules.mak

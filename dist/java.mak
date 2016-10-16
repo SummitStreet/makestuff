@@ -41,14 +41,24 @@ init :
 
 .PHONY : all init
 
-#** makestuff/src/generic/generic.mak
+#** makestuff/src/java/java.mak
 
--include $(MAKESTUFF)/generic_vars.mak
+-include $(MAKESTUFF)/java_vars.mak
 
 BUILD_DEPENDENCIES=\
-	github.com/account/repo@version.git
+	github.com/account/repo.git
 
 BUILD_TARGETS=\
-	component.ext
+	component.java
 
--include $(MAKESTUFF)/generic_rules.mak
+JAVA_CLASSPATH=\
+	dependency.jar
+
+JAVA_TEST_COMPONENTS=\
+	test.js
+
+component.js : $(SRC_DIR)/main/java/component.js
+
+test.js : $(SRC_DIR)/test/java/test.js
+
+-include $(MAKESTUFF)/java_rules.mak

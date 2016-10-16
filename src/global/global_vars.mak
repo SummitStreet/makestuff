@@ -59,10 +59,15 @@ TAGS=TAGS
 BUILD=build
 BUILD_PREAMBLE=build_preamble
 BUILD_EPILOGUE=build_epilogue
+COMPONENT_CLEAN=component_clean
+COMPONENT_ENVIRONMENT=component_environment
+COMPONENT_INIT=component_init
+COMPONENT_TEST=component_test
 DEPENDENCIES=dependencies
 ENVIRONMENT=environment
 GLOBAL_CLEAN=global_clean
 GLOBAL_ENVIRONMENT=global_environment
+GLOBAL_INIT=global_init
 GLOBAL_TEST=global_test
 INIT=init
 TEST=test
@@ -73,6 +78,7 @@ TEST_EPILOGUE=test_epilogue
 
 CLEAN_TARGETS+=$(GLOBAL_CLEAN)
 ENVIRONMENT_TARGETS+=$(GLOBAL_ENVIRONMENT)
+INIT_TARGETS+=$(GLOBAL_INIT)
 TEST_TARGETS+=$(GLOBAL_TEST)
 
 BUILD_DEPENDENCIES=
@@ -88,9 +94,14 @@ GIT_CLONE="$(GIT) clone --branch {ver} $(GIT_PROTOCOL)://{repo}.git {dir} >/dev/
 PYTHON=python
 SED=sed
 SED_ARGS=$(if grep -c 'Darwin',-i "",-i)
+SED_MATCH_ARGS=-En
 REPO_DIR=.makestuff
 DIST_DIR=dist
-SOURCE_DIR=src
+SRC_DIR=src
 TEMP_DIR=temp
+MAKESTUFF_JSON=makestuff.json
+COMPONENT_GROUP=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"group"[ ]*:[ ]*"?([^\n^"^,]*)"?,?/\1/p')
+COMPONENT_NAME=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"name"[ ]*:[ ]*"?([^\n^"^,]*)"?,?/\1/p')
+COMPONENT_VERSION=$(shell cat $(MAKESTUFF_JSON) | $(SED) $(SED_MATCH_ARGS) 's/.*"version"[ ]*:[ ]*"?([^\n^"^,]*)"?,?/\1/p')
 
 endif

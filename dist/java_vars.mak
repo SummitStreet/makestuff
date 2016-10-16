@@ -21,35 +21,41 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#** makestuff/src/javascript/javascript_vars.mak
+#** makestuff/src/java/java_vars.mak
 
-ifndef __JAVASCRIPT_VARS
+ifndef __JAVA_VARS
 
-__JAVASCRIPT_VARS=__javascript_vars
+__JAVA_VARS=__java_vars
 include $(MAKESTUFF)/global_vars.mak
 
 # Additional targets.
 
-JAVASCRIPT_CLEAN=javascript_clean
-JAVASCRIPT_ENVIRONMENT=javascript_environment
-JAVASCRIPT_INIT=javascript_init
-JAVASCRIPT_TEST=javascript_test
+JAVA_CLEAN=java_clean
+JAVA_ENVIRONMENT=java_environment
+JAVA_INIT=java_init
+JAVA_TEST=java_test
 
 # Global variables.
 
-CLEAN_TARGETS+=$(JAVASCRIPT_CLEAN)
-ENVIRONMENT_TARGETS+=$(JAVASCRIPT_ENVIRONMENT)
-INIT_TARGETS+=$(JAVASCRIPT_INIT)
-TEST_TARGETS+=$(JAVASCRIPT_TEST)
+CLEAN_TARGETS+=$(JAVA_CLEAN)
+ENVIRONMENT_TARGETS+=$(JAVA_ENVIRONMENT)
+INIT_TARGETS+=$(JAVA_INIT)
+TEST_TARGETS+=$(JAVA_TEST)
 
 MAKESTUFF_MERGE_PY=$(MAKESTUFF)/makestuff_merge.py
-JAVASCRIPT_TEST_COMPONENTS=
-JSLINT=eslint
-JSLINT_ARGS=
-NPM=npm
-NPM_ARGS=
-NPM_DIR=node_modules
-NODE=node
-NODE_ARGS=
-
+FINDBUGS=
+FINDBUGS_ARGS=-textui
+JAR=jar
+JAR_ARGS=
+JAVA=java
+JAVA_ARGS=
+JAVA_CLASSPATH=
+JAVA_CLASSES_DIR=$(DIST)/classes
+JAVA_SRC_DIR=$(SRC_DIR)/java/main
+JAVA_TEST_COMPONENTS=
+JAVAC=javac
+JAVAC_ARGS=-Xlint:unchecked
+JUNIT=
+JUNIT_ARGS=
+JAVA_TEMP_DIR=java_temp
 endif

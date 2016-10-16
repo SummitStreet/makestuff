@@ -41,14 +41,16 @@ init :
 
 .PHONY : all init
 
-#** makestuff/src/generic/generic.mak
+#** makestuff/src/xml/xml.mak
 
--include $(MAKESTUFF)/generic_vars.mak
+-include $(MAKESTUFF)/xml_vars.mak
 
 BUILD_DEPENDENCIES=\
-	github.com/account/repo@version.git
+	github.com/account/repo.git
 
 BUILD_TARGETS=\
-	component.ext
+	document.xml
 
--include $(MAKESTUFF)/generic_rules.mak
+document.xml : $(SRC_DIR)/resources/xml/document.xml
+
+-include $(MAKESTUFF)/xml_rules.mak

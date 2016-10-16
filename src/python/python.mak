@@ -12,8 +12,8 @@ BUILD_TARGETS=\
 PYTHON_TEST_COMPONENTS=\
 	test.py
 
-component.py : $(SOURCE_DIR)/main/python/component.py
+component.py : $(SRC_DIR)/main/python/component.py
 
-test.py : $(SOURCE_DIR)/test/python/test.py
+test.py : $(SRC_DIR)/test/python/test.py
 
 -include $(MAKESTUFF)/python_rules.mak

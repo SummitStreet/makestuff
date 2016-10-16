@@ -3,8 +3,8 @@
 
 -include $(MAKESTUFF)/c_vars.mak
 
-vpath %.h $(SOURCE_DIR)/main/c
-vpath %.c $(SOURCE_DIR)/main/c
+vpath %.h $(SRC_DIR)/main/c
+vpath %.c $(SRC_DIR)/main/c
 
 BUILD_DEPENDENCIES=\
 	github.com/account/repo.git

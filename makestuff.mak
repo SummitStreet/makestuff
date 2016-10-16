@@ -26,6 +26,7 @@
 REPO_DIR=.makestuff
 MAKESTUFF=src/global
 include src/python/python_vars.mak
+INIT_TARGETS+=makestuff_init
 MAKESTUFF_MERGE_PY=src/main/python/makestuff_merge.py
 
 REPO_DIR=.makestuff
@@ -37,99 +38,142 @@ $(ALL) :
 ### Initialize/bootstrap makestuff environment
 ### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
 
-init :
+$(COMPONENT_ENVIRONMENT) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] MAKESTUFF_MERGE_PY="$(MAKESTUFF_MERGE_PY)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] LAUNCHPAD_REPO="$(LAUNCHPAD_REPO)"
+	@echo $(NOW) [SYS] [$(SELF)] [$@] LAUNCHPAD="$(LAUNCHPAD)"
+
+$(COMPONENT_INIT) :
+	@rm -fr $(LAUNCHPAD)
 	@python -c 'import os, re, sys ; C = "git clone --branch {1} https://{0}.git {2}" ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(C.format(R, V[1:], D))' $(REPO_DIR) $(LAUNCHPAD_REPO) >/dev/null 2>/dev/null
-	@rm -fr $(REPO_DIR)/.tmp ; mv $(LAUNCHPAD)/src/main/python $(REPO_DIR)/.tmp ; rm -fr $(LAUNCHPAD) ; mv $(REPO_DIR)/.tmp $(LAUNCHPAD)
+	@rm -fr $(REPO_DIR)/.tmp ; mv $(LAUNCHPAD)/dist $(REPO_DIR)/.tmp ; rm -fr $(LAUNCHPAD) ; mv $(REPO_DIR)/.tmp $(LAUNCHPAD)
 
 BUILD_TARGETS=\
-	global_rules.mak \
-	global_vars.mak \
-	c.mak \
-	c_rules.mak \
-	c_vars.mak \
-	generic.mak \
-	generic_rules.mak \
-	generic_vars.mak \
-	javascript.mak \
-	javascript_rules.mak \
-	javascript_vars.mak \
-	python.mak \
-	python_rules.mak \
-	python_vars.mak \
-	makestuff.py \
-	makestuff_merge.py \
-	__clean
+	$(DIST_DIR)/global_rules.mak \
+	$(DIST_DIR)/global_vars.mak \
+	$(DIST_DIR)/c.mak \
+	$(DIST_DIR)/c_rules.mak \
+	$(DIST_DIR)/c_vars.mak \
+	$(DIST_DIR)/generic.mak \
+	$(DIST_DIR)/generic_rules.mak \
+	$(DIST_DIR)/generic_vars.mak \
+	$(DIST_DIR)/java.mak \
+	$(DIST_DIR)/java_rules.mak \
+	$(DIST_DIR)/java_vars.mak \
+	$(DIST_DIR)/javascript.mak \
+	$(DIST_DIR)/javascript_rules.mak \
+	$(DIST_DIR)/javascript_vars.mak \
+	$(DIST_DIR)/makestuff.json \
+	$(DIST_DIR)/python.mak \
+	$(DIST_DIR)/python_rules.mak \
+	$(DIST_DIR)/python_vars.mak \
+	$(DIST_DIR)/makestuff.py \
+	$(DIST_DIR)/makestuff_merge.py \
+	$(DIST_DIR)/xml.mak \
+	$(DIST_DIR)/xml_rules.mak \
+	$(DIST_DIR)/xml_vars.mak \
+	$(COMPONENT_CLEAN)
 
-%.mak :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Makefile Module
-	@mkdir -p $(DIST_DIR)
-	@cat $^ > $(DIST_DIR)/$@
-
-$(TEMP_DIR)/init_rule.mak+py : $(SOURCE_DIR)/main/python/inline.py $(SOURCE_DIR)/main/python/makestuff_init.py $(SOURCE_DIR)/main/python/makestuff_path.py
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
-	@mkdir -p $(TEMP_DIR)
-	$(foreach script,$^,$(shell pylint -r n -E --persistent=n $(script) 2>/dev/null))
-	@cat $(SOURCE_DIR)/global/init_rule.mak | sed 's/makestuff_init.py/$(shell cat $(SOURCE_DIR)/main/python/makestuff_init.py | python $(SOURCE_DIR)/main/python/inline.py)/' | sed 's/makestuff_path.py/$(shell cat $(SOURCE_DIR)/main/python/makestuff_path.py | python $(SOURCE_DIR)/main/python/inline.py)/' > $@
-
-__clean :
+$(COMPONENT_CLEAN) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Removing Temporary Files
 	@rm -fr $(TEMP_DIR)
 
-global_rules.mak : \
-	$(SOURCE_DIR)/global/global_rules.mak
+%.json :
+	@echo $(NOW) [SYS] [$(SELF)] [$@]
+	@mkdir -p $(dir $@)
+	@cat $^ > $@
 
-global_vars.mak : \
-	$(SOURCE_DIR)/global/global_vars.mak
+%.mak :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Makefile Module
+	@mkdir -p $(dir $@)
+	@cat $^ > $@
 
-c.mak : \
-	$(SOURCE_DIR)/global/license.mak \
+$(TEMP_DIR)/init_rule.mak+py : $(SRC_DIR)/main/python/inline.py $(SRC_DIR)/main/python/makestuff_init.py $(SRC_DIR)/main/python/makestuff_path.py
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
+	@mkdir -p $(TEMP_DIR)
+	$(foreach script,$^,$(shell pylint -r n -E --persistent=n $(script) 2>/dev/null))
+	@cat $(SRC_DIR)/global/init_rule.mak | sed 's/makestuff_init.py/$(shell cat $(SRC_DIR)/main/python/makestuff_init.py | python $(SRC_DIR)/main/python/inline.py)/' | sed 's/makestuff_path.py/$(shell cat $(SRC_DIR)/main/python/makestuff_path.py | python $(SRC_DIR)/main/python/inline.py)/' > $@
+
+$(DIST_DIR)/global_rules.mak : \
+	$(SRC_DIR)/global/global_rules.mak
+
+$(DIST_DIR)/global_vars.mak : \
+	$(SRC_DIR)/global/global_vars.mak
+
+$(DIST_DIR)/c.mak : \
+	$(SRC_DIR)/global/license.mak \
 	$(TEMP_DIR)/init_rule.mak+py \
-	$(SOURCE_DIR)/c/c.mak
+	$(SRC_DIR)/c/c.mak
 
-c_rules.mak : \
-	$(SOURCE_DIR)/c/c_rules.mak
+$(DIST_DIR)/c_rules.mak : \
+	$(SRC_DIR)/c/c_rules.mak
 
-c_vars.mak : \
-	$(SOURCE_DIR)/c/c_vars.mak
+$(DIST_DIR)/c_vars.mak : \
+	$(SRC_DIR)/c/c_vars.mak
 
-generic.mak : \
-	$(SOURCE_DIR)/global/license.mak \
+$(DIST_DIR)/generic.mak : \
+	$(SRC_DIR)/global/license.mak \
 	$(TEMP_DIR)/init_rule.mak+py \
-	$(SOURCE_DIR)/generic/generic.mak
+	$(SRC_DIR)/generic/generic.mak
 
-generic_rules.mak : \
-	$(SOURCE_DIR)/generic/generic_rules.mak
+$(DIST_DIR)/generic_rules.mak : \
+	$(SRC_DIR)/generic/generic_rules.mak
 
-generic_vars.mak : \
-	$(SOURCE_DIR)/generic/generic_vars.mak
+$(DIST_DIR)/generic_vars.mak : \
+	$(SRC_DIR)/generic/generic_vars.mak
 
-javascript.mak : \
-	$(SOURCE_DIR)/global/license.mak \
+$(DIST_DIR)/java.mak : \
+	$(SRC_DIR)/global/license.mak \
 	$(TEMP_DIR)/init_rule.mak+py \
-	$(SOURCE_DIR)/javascript/javascript.mak
+	$(SRC_DIR)/java/java.mak
 
-javascript_rules.mak : \
-	$(SOURCE_DIR)/javascript/javascript_rules.mak
+$(DIST_DIR)/java_rules.mak : \
+	$(SRC_DIR)/java/java_rules.mak
 
-javascript_vars.mak : \
-	$(SOURCE_DIR)/javascript/javascript_vars.mak
+$(DIST_DIR)/java_vars.mak : \
+	$(SRC_DIR)/java/java_vars.mak
 
-python.mak : \
-	$(SOURCE_DIR)/global/license.mak \
+$(DIST_DIR)/javascript.mak : \
+	$(SRC_DIR)/global/license.mak \
 	$(TEMP_DIR)/init_rule.mak+py \
-	$(SOURCE_DIR)/python/python.mak
+	$(SRC_DIR)/javascript/javascript.mak
 
-python_rules.mak : \
-	$(SOURCE_DIR)/python/python_rules.mak
+$(DIST_DIR)/javascript_rules.mak : \
+	$(SRC_DIR)/javascript/javascript_rules.mak
 
-python_vars.mak : \
-	$(SOURCE_DIR)/python/python_vars.mak
+$(DIST_DIR)/javascript_vars.mak : \
+	$(SRC_DIR)/javascript/javascript_vars.mak
 
-makestuff.py : \
+$(DIST_DIR)/makestuff.json : \
+	$(SRC_DIR)/main/conf/makestuff.json
+
+$(DIST_DIR)/python.mak : \
+	$(SRC_DIR)/global/license.mak \
+	$(TEMP_DIR)/init_rule.mak+py \
+	$(SRC_DIR)/python/python.mak
+
+$(DIST_DIR)/python_rules.mak : \
+	$(SRC_DIR)/python/python_rules.mak
+
+$(DIST_DIR)/python_vars.mak : \
+	$(SRC_DIR)/python/python_vars.mak
+
+$(DIST_DIR)/makestuff.py : \
 	$(LAUNCHPAD)/service.py \
-	$(SOURCE_DIR)/main/python/makestuff.py
+	$(SRC_DIR)/main/python/makestuff.py
 
-makestuff_merge.py : \
-	$(SOURCE_DIR)/main/python/makestuff_merge.py
+$(DIST_DIR)/makestuff_merge.py : \
+	$(SRC_DIR)/main/python/makestuff_merge.py
+
+$(DIST_DIR)/xml.mak : \
+	$(SRC_DIR)/global/license.mak \
+	$(TEMP_DIR)/init_rule.mak+py \
+	$(SRC_DIR)/xml/xml.mak
+
+$(DIST_DIR)/xml_rules.mak : \
+	$(SRC_DIR)/xml/xml_rules.mak
+
+$(DIST_DIR)/xml_vars.mak : \
+	$(SRC_DIR)/xml/xml_vars.mak
 
 include src/python/python_rules.mak

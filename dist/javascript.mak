@@ -35,6 +35,7 @@ all :
 ### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
 
 init :
+	@rm -fr $(MAKESTUFF)
 	@python -c 'import os, re, sys ; C = "git clone --branch {1} https://{0}.git {2}" ; R, V = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups() ; D = os.sep.join([sys.argv[1], R, V[1:]]) ; None if os.path.isdir(D) else os.system(C.format(R, V[1:], D))' $(REPO_DIR) $(MAKESTUFF_REPO) >/dev/null 2>/dev/null
 	@rm -fr $(REPO_DIR)/.tmp ; mv $(MAKESTUFF)/dist $(REPO_DIR)/.tmp ; rm -fr $(MAKESTUFF) ; mv $(REPO_DIR)/.tmp $(MAKESTUFF)
 
@@ -53,8 +54,8 @@ BUILD_TARGETS=\
 JAVASCRIPT_TEST_COMPONENTS=\
 	test.js
 
-component.js : $(SOURCE_DIR)/main/javascript/component.js
+component.js : $(SRC_DIR)/main/javascript/component.js
 
-test.js : $(SOURCE_DIR)/test/javascript/test.js
+test.js : $(SRC_DIR)/test/javascript/test.js
 
 -include $(MAKESTUFF)/javascript_rules.mak

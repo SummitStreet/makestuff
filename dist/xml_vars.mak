@@ -21,35 +21,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#** makestuff/src/javascript/javascript_vars.mak
+#** makestuff/src/xml/xml_vars.mak
 
-ifndef __JAVASCRIPT_VARS
+ifndef __XML_VARS
 
-__JAVASCRIPT_VARS=__javascript_vars
+__XML_VARS=__xml_vars
 include $(MAKESTUFF)/global_vars.mak
 
 # Additional targets.
 
-JAVASCRIPT_CLEAN=javascript_clean
-JAVASCRIPT_ENVIRONMENT=javascript_environment
-JAVASCRIPT_INIT=javascript_init
-JAVASCRIPT_TEST=javascript_test
+XML_CLEAN=xml_clean
+XML_ENVIRONMENT=xml_environment
+XML_INIT=xml_init
+XML_TEST=xml_test
 
 # Global variables.
 
-CLEAN_TARGETS+=$(JAVASCRIPT_CLEAN)
-ENVIRONMENT_TARGETS+=$(JAVASCRIPT_ENVIRONMENT)
-INIT_TARGETS+=$(JAVASCRIPT_INIT)
-TEST_TARGETS+=$(JAVASCRIPT_TEST)
+CLEAN_TARGETS+=$(XML_CLEAN)
+ENVIRONMENT_TARGETS+=$(XML_ENVIRONMENT)
+INIT_TARGETS+=$(XML_INIT)
+TEST_TARGETS+=$(XML_TEST)
 
 MAKESTUFF_MERGE_PY=$(MAKESTUFF)/makestuff_merge.py
-JAVASCRIPT_TEST_COMPONENTS=
-JSLINT=eslint
-JSLINT_ARGS=
-NPM=npm
-NPM_ARGS=
-NPM_DIR=node_modules
-NODE=node
-NODE_ARGS=
+XML_TEST_COMPONENTS=
+XML_VALIDATOR=$(PYTHON) -c 'import sys, xml.etree.ElementTree as ET ; ET.parse(sys.argv[1])'
 
 endif

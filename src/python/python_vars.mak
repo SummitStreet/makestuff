@@ -32,12 +32,14 @@ include $(MAKESTUFF)/global_vars.mak
 
 PYTHON_CLEAN=python_clean
 PYTHON_ENVIRONMENT=python_environment
+PYTHON_INIT=python_init
 PYTHON_TEST=python_test
 
-# Python-specific variables.
+# Global variables.
 
 CLEAN_TARGETS+=$(PYTHON_CLEAN)
 ENVIRONMENT_TARGETS+=$(PYTHON_ENVIRONMENT)
+INIT_TARGETS+=$(PYTHON_INIT)
 TEST_TARGETS+=$(PYTHON_TEST)
 
 MAKESTUFF_MERGE_PY=$(MAKESTUFF)/makestuff_merge.py
