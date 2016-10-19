@@ -82,9 +82,17 @@ class MakeStuff(Service):
 			self._load_config_file(directory)
 			temp_dir = self.repo_dir + os.sep + self.temp_dir
 			shutil.rmtree(temp_dir, True)
-			os.mkdir(temp_dir)
-			for i in self.config["components"]:
- 				shutil.move(directory + os.sep + i, temp_dir)
+			os.makedirs(temp_dir)
+			files = self.config["components"]
+			prefix = os.path.commonprefix(self.config["components"])
+			files = [(directory + os.sep + i, temp_dir + os.sep + i[len(prefix):]) for i in files]
+			for i in files:
+				source = i[0]
+				target = i[1]
+				if os.path.isfile(source) and not os.path.exists(os.path.dirname(target)):
+					target = os.path.dirname(target)
+					os.makedirs(target)
+				shutil.move(source, target)
  			shutil.rmtree(directory)
  			shutil.move(temp_dir, directory)
 
