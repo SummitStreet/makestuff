@@ -276,6 +276,7 @@ class MakeStuff(Service):
 		Extracts the repo name, version, and target directory from the repo URI.
 		"""
 		repo, version = re.match(r"(.+?)(@.*)?.git", sys.argv[2]).groups()
+		version = version if version else "@master"
 		directory = os.sep.join([self.repo_dir, repo, version[1:]])
 		return (repo, version[1:], directory)
 

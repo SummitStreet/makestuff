@@ -153,7 +153,7 @@ class JavaScript(object):
 		"""
 		source_code = Remove.parse(source_code, [
 			r"//.*?\n",
-			r"/\*(?!\s*eslint).*\*/",
+			r"/\*(?!\s*(eslint|global)).*\*/",
 			re.compile(r"/\*[^*]*^.*?\*/", re.DOTALL | re.MULTILINE)
 		])
 		source_code = Singleton.parse(source_code, [
