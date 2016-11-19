@@ -28,7 +28,7 @@ ifndef __JAVASCRIPT_RULES
 __JAVASCRIPT_RULES=__javascript_rules
 include $(MAKESTUFF)/global_rules.mak
 
-.PHONY : $(JAVASCRIPT_CLEAN) $(JAVASCRIPT_ENVIRONMENT) $(JAVASCRIPT_INIT) $(JAVASCRIPT_TEST)
+.PHONY : $(JAVASCRIPT_CLEAN) $(JAVASCRIPT_DISTCLEAN) $(JAVASCRIPT_ENVIRONMENT) $(JAVASCRIPT_INIT) $(JAVASCRIPT_TEST)
 
 %.js :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Module "($^)"
@@ -57,6 +57,9 @@ include $(MAKESTUFF)/global_rules.mak
 	fi
 
 $(JAVASCRIPT_CLEAN) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
+
+$(JAVASCRIPT_DISTCLEAN) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
 	@rm -rf $(NPM_DIR)
 

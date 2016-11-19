@@ -28,6 +28,7 @@ ifndef __GLOBAL_RULES
 __GLOBAL_RULES=__global_rules
 
 CLEAN_TARGETS+=$(COMPONENT_CLEAN)
+DISTCLEAN_TARGETS+=$(GLOBAL_DISTCLEAN)
 ENVIRONMENT_TARGETS+=$(COMPONENT_ENVIRONMENT)
 INIT_TARGETS+=$(COMPONENT_INIT)
 TEST_TARGETS+=$(COMPONENT_TEST)
@@ -38,7 +39,7 @@ TEST_TARGETS+=$(COMPONENT_TEST)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install GIT Dependencies
 	@$(PYTHON) $(MAKESTUFF)/makestuff.py --repo $@ install
 
-$(ALL) : $(ENVIRONMENT) $(BUILD)
+$(ALL) : $(ENVIRONMENT) $(BUILD) $(SELF)
 	@echo $(NOW) [SYS] [$(SELF)] [$@]
 
 $(CHECK) : $(ENVIRONMENT)
@@ -50,11 +51,8 @@ $(CLEAN) : $(ENVIRONMENT) $(CLEAN_TARGETS)
 $(DIST) : $(ENVIRONMENT)
 	@echo $(NOW) [SYS] [$(SELF)] [$@]
 
-$(DISTCLEAN) : $(ENVIRONMENT)
+$(DISTCLEAN) : $(ENVIRONMENT) $(DISTCLEAN_TARGETS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
-	@rm -rf $(TEMP_DIR)
-	@rm -rf $(DIST_DIR)
-	@rm -rf $(REPO_DIR)
 
 $(DVI) : $(ENVIRONMENT)
 	@echo $(NOW) [SYS] [$(SELF)] [$@]
@@ -126,6 +124,12 @@ $(GLOBAL_CLEAN) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
 	@rm -rf $(TEMP_DIR)
 	@rm -rf $(DIST_DIR)
+
+$(GLOBAL_DISTCLEAN) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
+	@rm -rf $(TEMP_DIR)
+	@rm -rf $(DIST_DIR)
+	@rm -rf $(REPO_DIR)
 
 $(GLOBAL_ENVIRONMENT) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] SELF="$(SELF)"
