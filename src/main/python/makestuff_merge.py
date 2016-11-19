@@ -152,7 +152,7 @@ class JavaScript(object):
 		TODO
 		"""
 		source_code = Remove.parse(source_code, [
-			r"//.*?\n",
+			r"\s//.*?\n",
 			r"/\*(?!\s*(eslint|global)).*\*/",
 			re.compile(r"/\*[^*]*^.*?\*/", re.DOTALL | re.MULTILINE)
 		])

@@ -50,11 +50,8 @@ $(CLEAN) : $(ENVIRONMENT) $(CLEAN_TARGETS)
 $(DIST) : $(ENVIRONMENT)
 	@echo $(NOW) [SYS] [$(SELF)] [$@]
 
-$(DISTCLEAN) : $(ENVIRONMENT)
+$(DISTCLEAN) : $(ENVIRONMENT) $(DISTCLEAN_TARGETS)
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
-	@rm -rf $(TEMP_DIR)
-	@rm -rf $(DIST_DIR)
-	@rm -rf $(REPO_DIR)
 
 $(DVI) : $(ENVIRONMENT)
 	@echo $(NOW) [SYS] [$(SELF)] [$@]
@@ -126,6 +123,12 @@ $(GLOBAL_CLEAN) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
 	@rm -rf $(TEMP_DIR)
 	@rm -rf $(DIST_DIR)
+
+$(GLOBAL_DISTCLEAN) :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Cleaning $(SELF)
+	@rm -rf $(TEMP_DIR)
+	@rm -rf $(DIST_DIR)
+	@rm -rf $(REPO_DIR)
 
 $(GLOBAL_ENVIRONMENT) :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] SELF="$(SELF)"
