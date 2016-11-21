@@ -32,7 +32,7 @@ MAKESTUFF=$(shell python -c 'import os, re, sys ; R, V = re.match(r"(.+?)(@.*)?.
 all :
 
 ### Initialize/bootstrap makestuff environment
-### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
+### usage: make [-f <makefile>] makestuff_init [REPO_DIR=<external_repo_base_directory>]
 
 makestuff_init :
 	@rm -fr $(MAKESTUFF)

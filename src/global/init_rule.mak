@@ -10,7 +10,7 @@ MAKESTUFF=$(shell python -c 'makestuff_path.py' $(REPO_DIR) $(MAKESTUFF_REPO))
 all :
 
 ### Initialize/bootstrap makestuff environment
-### usage: make [-f <makefile>] init [REPO_DIR=<external_repo_base_directory>]
+### usage: make [-f <makefile>] makestuff_init [REPO_DIR=<external_repo_base_directory>]
 
 makestuff_init :
 	@rm -fr $(MAKESTUFF)
