@@ -265,11 +265,10 @@ class MakeStuff(Service):
 				config_file_str = makestuff_json.read()
 				self.config = json.loads(config_file_str)
 		except IOError:
-			msg = "{0}: Unable to load config file '{1}'."
-			print msg.format(sys.argv[0], config_file)
+			self.log_system("Unable to load config file '{0}'.".format(config_file))
+
 		except ValueError:
-			msg = "{0}: The config file '{1}' is not valid JSON."
-			print msg.format(sys.argv[0], config_file)
+			self.log_system("The config file '{0}' is not valid JSON.".format(config_file))
 
 	def _parse_repo(self):
 		"""
@@ -285,8 +284,9 @@ class MakeStuff(Service):
 		Installs the specified repository.
 		"""
 		repository, version, directory = self._parse_repo()
-		msg = "{0}: Installing repository {1} [version: {2}] into {3}"
-		print msg.format(sys.argv[0], repository, version, directory)
+		msg = "Installing repository {0} (version: {1}) into {2}".format(repository, version, directory)
+		self.log_system(msg)
+
 		if not os.path.isdir(directory):
  			os.system(self.repo_clone.format(repo=repository, ver=version, dir=directory))
 			self._load_config_file(directory)
@@ -310,18 +310,18 @@ class MakeStuff(Service):
 		"""
 		Returns the location of the specified repository.
 		"""
-		msg = "{0}: Location of repository {1} [version: {2}] is {3}"
 		repository, version, directory = self._parse_repo()
-		print msg.format(sys.argv[0], repository, version, directory)
+		msg = "Location of repository {0} [version: {1}] is {2}.".format(repository, version, directory)
+		self.log_system(msg)
 		return directory
 
 	def remove(self):
 		"""
 		Removes the specified repository.
 		"""
-		msg = "{0}: Removing repository {1} [version: {2}] from {3}"
 		repository, version, directory = self._parse_repo()
-		print msg.format(sys.argv[0], repository, version, self.repo_dir)
+		msg = "Removing repository {0} [version: {1}] from {2}".format(repository, version, self.repo_dir)
+		self.log_system(msg)
 		# Remove and then recreate the directory, then remove empty directories.
 		shutil.rmtree(directory)
 		os.mkdir(directory)
@@ -331,8 +331,7 @@ class MakeStuff(Service):
 		"""
 		Removes all repositories.
 		"""
-		msg = "{0}: Removing all repositories from {1}"
-		print msg.format(sys.argv[0], self.repo_dir)
+		self.log_system("Removing all repositories from {0}.".format(self.repo_dir))
 		shutil.rmtree(self.repo_dir, True)
 
 	def start(self):
