@@ -54,10 +54,6 @@ TEST_TARGETS+=$(COMPONENT_TEST)
 	@mkdir -p $(dir $@)
 	@cat $^ > $@
 
-%-$(COMPONENT_VERSION)-$(BUILD_ENVIRONMENT).zip :
-	@echo $(NOW) [SYS] [$(SELF)] [$@] Build ZIP File "($^)"
-	@mkdir -p $(dir $@)
-
 %$(COMPONENT_NAME)-$(COMPONENT_VERSION)-$(BUILD_ENVIRONMENT).zip :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Build ZIP File "($^)"
 	@mkdir -p $(dir $@)
