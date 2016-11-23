@@ -35,9 +35,33 @@ TEST_TARGETS+=$(COMPONENT_TEST)
 
 .PHONY : $(ALL) $(CHECK) $(CLEAN) $(DIST) $(DISTCLEAN) $(DVI) $(HTML) $(INFO) $(INSTALL) $(INSTALL_DVI) $(INSTALL_HTML) $(INSTALL_PDF) $(INSTALL_PS) $(INSTALL_STRIP) $(INSTALLCHECK) $(INSTALLDIRS) $(MAINTAINER_CLEAN) $(MOSTLYCLEAN) $(PDF) $(PS) $(UNINSTALL) $(TAGS) $(BUILD) $(BUILD_PREAMBLE) $(BUILD_EPILOGUE) $(DEPENDENCIES) $(ENVIRONMENT) $(MAKESTUFF_INIT) $(GLOBAL_CLEAN) $(GLOBAL_ENVIRONMENT) $(GLOBAL_INIT) $(GLOBAL_TEST) $(INIT) $(TEST) $(TEST_PREAMBLE) $(TEST_EPILOGUE) $(COMPONENT_CLEAN) $(COMPONENT_ENVIRONMENT) $(COMPONENT_INIT) $(COMPONENT_TEST)
 
+%.conf :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Config File "($^)"
+	@mkdir -p $(dir $@)
+	@cat $^ > $@
+
 %.git :
 	@echo $(NOW) [SYS] [$(SELF)] [$@] Install GIT Dependencies
 	@$(PYTHON) $(MAKESTUFF)/makestuff.py --repo $@ install
+
+%.mak :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Makefile "($^)"
+	@mkdir -p $(dir $@)
+	@cat $^ > $@
+
+%.sh :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build Shell Script "($^)"
+	@mkdir -p $(dir $@)
+	@cat $^ > $@
+
+%-$(COMPONENT_VERSION)-$(BUILD_ENVIRONMENT).zip :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build ZIP File "($^)"
+	@mkdir -p $(dir $@)
+
+%$(COMPONENT_NAME)-$(COMPONENT_VERSION)-$(BUILD_ENVIRONMENT).zip :
+	@echo $(NOW) [SYS] [$(SELF)] [$@] Build ZIP File "($^)"
+	@mkdir -p $(dir $@)
+	@pushd `pwd` > /dev/null ; cd $(@D) ; zip -q -9 -r $(@F) $(subst $(@D)/,,$^) ; popd > /dev/null
 
 $(ALL) : $(ENVIRONMENT) $(BUILD) $(SELF)
 	@echo $(NOW) [SYS] [$(SELF)] [$@]

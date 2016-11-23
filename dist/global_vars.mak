@@ -85,6 +85,7 @@ TEST_TARGETS+=$(GLOBAL_TEST)
 
 BUILD_DEPENDENCIES=
 BUILD_TARGETS=
+BUILD_ENVIRONMENT=
 
 SELF=$(strip $(firstword $(MAKEFILE_LIST)))
 DATE_TIME=$(shell if [ "`uname`" == "Darwin" ]; then echo "+%Y-%m-%d %H:%M:%S" ; else echo "+%F %T" ; fi)
